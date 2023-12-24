@@ -1,0 +1,37 @@
+#회원가입
+###
+POST http://localhost:3000/user/register
+Content-Type: application/json
+
+{
+  "email": "example@gmail.com",
+  "password": "example@gmail.com",
+  "name": "정기욱",
+  "sex": "male",
+  "phone": "01092452826"
+}
+
+#로그인
+###
+POST http://localhost:3000/user/login
+Content-Type: application/json
+
+{
+  "email": "example@gmail.com",
+  "password": "example@gmail.com"
+}
+
+#정보 조회
+###
+GET http://localhost:3000/user/10
+Authorization: 
+
+#테스트
+###
+POST http://localhost:3000/user/test
+Authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImV4YW1wbGVAZ21haWwuY29tIiwic3ViIjoxMCwiaWF0IjoxNzAzNDM1MzA4fQ.HX1dVYiFlzV99UktlDVrmZyha_cyWW4W7FZIVNGvNEI.eyJlbWFpbCI6ImV4YW1wbGVAZ21haWwuY29tIiwic3ViIjoxMCwiaWF0IjoxNzAzNDM1Mjk2fQ.JJJDZLZsuFXY5vwDzhkBVYK25c5wTVm6ykTAOb4O6FA"
+
+#email
+###
+GET http://localhost:3000/user/email
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImV4YW1wbGVAZ21haWwuY29tIiwic3ViIjoxMCwiaWF0IjoxNzAzNDM1NDU2fQ.Sm9mKC7KIuzRgkLVuygrnXxaNOKYL1bMtDfVq_gS8IY
