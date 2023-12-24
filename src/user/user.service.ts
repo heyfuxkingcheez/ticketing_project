@@ -63,6 +63,7 @@ export class UserService {
   }
 
   async getUser(userId: string) {
+    console.log('하이');
     return await this.userRepository.findOne({
       where: { userId: +userId },
       select: ['userId', 'email', 'name', 'sex', 'phone'],
