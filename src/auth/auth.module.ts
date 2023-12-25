@@ -4,6 +4,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './jwt.strategy';
 import { UserModule } from 'src/user/user.module';
+import { JwtNaverStrategy } from './naver.strategy';
+import { AuthService } from './auth.service';
 
 @Module({
   imports: [
@@ -19,7 +21,7 @@ import { UserModule } from 'src/user/user.module';
     }),
     UserModule,
   ],
-  providers: [JwtStrategy],
-  exports: [JwtModule, PassportModule],
+  providers: [AuthService, JwtStrategy, JwtNaverStrategy],
+  exports: [AuthService, JwtModule, PassportModule],
 })
 export class AuthModule {}

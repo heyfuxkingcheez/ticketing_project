@@ -24,14 +24,8 @@ Content-Type: application/json
 #정보 조회
 ###
 GET http://localhost:3000/user/10
-Authorization: 
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImV4YW1wbGVAZ21haWwuY29tIiwic3ViIjoxMCwiaWF0IjoxNzAzNDM1NTI2fQ.7HnLXKlQeAxw9y4FtIP41MWE6Ok_L0DhMm7YaP_Or8M
 
-#테스트
+#네이버 로그인
 ###
-POST http://localhost:3000/user/test
-Authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImV4YW1wbGVAZ21haWwuY29tIiwic3ViIjoxMCwiaWF0IjoxNzAzNDM1MzA4fQ.HX1dVYiFlzV99UktlDVrmZyha_cyWW4W7FZIVNGvNEI.eyJlbWFpbCI6ImV4YW1wbGVAZ21haWwuY29tIiwic3ViIjoxMCwiaWF0IjoxNzAzNDM1Mjk2fQ.JJJDZLZsuFXY5vwDzhkBVYK25c5wTVm6ykTAOb4O6FA"
-
-#email
-###
-GET http://localhost:3000/user/email
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImV4YW1wbGVAZ21haWwuY29tIiwic3ViIjoxMCwiaWF0IjoxNzAzNDM1NDU2fQ.Sm9mKC7KIuzRgkLVuygrnXxaNOKYL1bMtDfVq_gS8IY
+GET  http://localhost:3000/user/login/naver

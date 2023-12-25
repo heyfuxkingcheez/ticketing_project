@@ -5,6 +5,7 @@ import {
   Param,
   Post,
   Req,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -13,6 +14,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { UserInfo } from 'src/utils/userInfo.decorator';
 import { User } from './entities/user.entity';
 import { LoginDto } from './dto/login.dto';
+import { Request, Response } from 'express';
 
 @Controller('user')
 export class UserController {
@@ -47,9 +49,20 @@ export class UserController {
     return user;
   }
 
-  @Post('/test')
-  @UseGuards(AuthGuard('jwt'))
-  test(@Req() req) {
-    console.log('req', req);
+  @UseGuards(AuthGuard('naver'))
+  @Get('login/naver')
+  async loginNaver() {
+    return;
+  }
+
+  @UseGuards(AuthGuard('naver'))
+  @Get('naver/callback')
+  async callback(@Req() req: Request, @Res() res: Response): Promise<any> {
+    console.log(req.user);
+    try {
+      return await this.userService.OAuthLogin({ req, res });
+    } catch (error) {
+      console.error('Error in loginNaver', error);
+    }
   }
 }

@@ -10,6 +10,8 @@ import { JwtStrategy } from './../auth/jwt.strategy';
 import { JwtService } from '@nestjs/jwt';
 import { compare, hash } from 'bcrypt';
 import _ from 'lodash';
+import { IsEmail } from 'class-validator';
+import { access } from 'fs';
 
 @Injectable()
 export class UserService {
@@ -35,8 +37,8 @@ export class UserService {
       email,
       password: hashedPassword,
       name,
-      sex,
       phone,
+      sex,
     });
   }
 
@@ -60,6 +62,32 @@ export class UserService {
     return {
       accessToken,
     };
+  }
+
+  async OAuthLogin({ req, res }) {
+    console.log('네이버 유저 서비스 진입 성공!');
+    // 1. 회원조회
+    let user = await this.userRepository.findOne({
+      where: { email: req.user.email },
+    });
+    // 2. 회원가입이 안되어 있다면, 자동회원 가입
+    const hashedPassword = await hash(req.user.id, 12);
+    console.log(req.user.gender);
+    if (!user) {
+      await this.userRepository.save({
+        email: req.user.email,
+        password: hashedPassword,
+        name: req.user.name,
+        phone: req.user.phone,
+        sex: req.user.gender,
+      });
+    }
+    // 3. 회원가입이 되어 있다면, 로그인
+    const { email } = req.user;
+    const payload = { email };
+    const accessToken = await this.jwtService.signAsync(payload);
+
+    res.status(200).json({ accessToken });
   }
 
   async getUser(userId: string) {
