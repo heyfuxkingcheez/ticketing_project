@@ -10,8 +10,6 @@ import { JwtStrategy } from './../auth/jwt.strategy';
 import { JwtService } from '@nestjs/jwt';
 import { compare, hash } from 'bcrypt';
 import _ from 'lodash';
-import { IsEmail } from 'class-validator';
-import { access } from 'fs';
 
 @Injectable()
 export class UserService {
@@ -87,11 +85,11 @@ export class UserService {
     const payload = { email };
     const accessToken = await this.jwtService.signAsync(payload);
 
-    res.status(200).json({ accessToken });
+    res.status(200).json({ accessToken: `Bearer ${accessToken}` });
   }
 
   async getUser(userId: string) {
-    console.log('하이');
+    console.log('얘 왜뜸?');
     return await this.userRepository.findOne({
       where: { userId: +userId },
       select: ['userId', 'email', 'name', 'sex', 'phone'],
@@ -99,6 +97,10 @@ export class UserService {
   }
 
   async findByEmail(email: string) {
-    return await this.userRepository.findOneBy({ email });
+    return await this.userRepository.findOne({ where: { email } });
+  }
+
+  checkUser(userPayload: any) {
+    return `유저 정보: ${JSON.stringify(userPayload)}}`;
   }
 }

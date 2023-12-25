@@ -1,5 +1,10 @@
 import Joi from 'joi';
-import { Module } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 
@@ -7,6 +12,9 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { User } from './user/entities/user.entity';
+import { AuthMiddleWare } from './auth/auth.middleware';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 
 const typeOrmModuleOptions = {
   useFactory: async (
@@ -44,7 +52,13 @@ const typeOrmModuleOptions = {
     AuthModule,
     UserModule,
   ],
-  controllers: [],
-  providers: [],
+  controllers: [AppController],
+  providers: [AppService, AuthMiddleWare],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(AuthMiddleWare)
+      .forRoutes({ path: 'user/check', method: RequestMethod.GET });
+  }
+}

@@ -42,6 +42,13 @@ export class UserController {
     return { email: user.email };
   }
 
+  @Get('check')
+  checkUser(@Req() req: any) {
+    const userPayload = req.user;
+    return this.userService.checkUser(userPayload);
+  }
+
+  // 물어봐야지 check 보다 위에있으면 왜 일로 넘어가는지...
   @UseGuards(AuthGuard('jwt'))
   @Get(':userId')
   findOne(@Param('userId') userId: string) {
