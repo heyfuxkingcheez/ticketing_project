@@ -32,8 +32,11 @@ export class UserController {
   }
 
   @Post('login')
-  async login(@Body() loginDto: LoginDto): Promise<{ accessToken: string }> {
-    return await this.userService.login(loginDto.email, loginDto.password);
+  async login(
+    @Body() loginDto: LoginDto,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<{ accessToken: string }> {
+    return await this.userService.login(loginDto.email, loginDto.password, res);
   }
 
   @UseGuards(AuthGuard('jwt'))
@@ -64,7 +67,10 @@ export class UserController {
 
   @UseGuards(AuthGuard('naver'))
   @Get('naver/callback')
-  async callback(@Req() req: Request, @Res() res: Response): Promise<any> {
+  async callback(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<any> {
     console.log(req.user);
     try {
       return await this.userService.OAuthLogin({ req, res });

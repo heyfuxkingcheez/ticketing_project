@@ -4,18 +4,21 @@ import {
   DeleteDateColumn,
   Entity,
   Index,
+  JoinColumn,
+  OneToOne,
   PrimaryGeneratedColumn,
   Timestamp,
   UpdateDateColumn,
 } from 'typeorm';
 import { Role } from '../types/userRole.type';
+import { Point } from '../../point/entities/point.entity';
 
 @Index('email', ['email'], { unique: true })
 @Entity({
   name: 'users',
 })
 export class User {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ name: 'userId' })
   userId: number;
   @Column({ type: 'varchar', unique: true, nullable: false })
   email: string;

@@ -7,8 +7,8 @@ Content-Type: application/json
   "email": "example@gmail.com",
   "password": "example@gmail.com",
   "name": "정기욱",
-  "sex": "male",
-  "phone": "01092452826"
+  "sex": "M",
+  "phone": "010-9245-2826"
 }
 
 #로그인
@@ -18,13 +18,13 @@ Content-Type: application/json
 
 {
   "email": "example@gmail.com",
-  "password": "example@gmail.com"
+  "password": "aaaa1234"
 }
 
 #정보 조회
 ###
-GET http://localhost:3000/user/10
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImV4YW1wbGVAZ21haWwuY29tIiwic3ViIjoxMCwiaWF0IjoxNzAzNDM1NTI2fQ.7HnLXKlQeAxw9y4FtIP41MWE6Ok_L0DhMm7YaP_Or8M
+GET http://localhost:3000/user/14
+
 
 #네이버 로그인
 ###

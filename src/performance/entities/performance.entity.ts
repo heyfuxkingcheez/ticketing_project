@@ -1,8 +1,12 @@
+import { Place } from 'src/place/entities/place.entity';
+import { Ticket } from 'src/ticket/entities/ticket.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
+  OneToMany,
   PrimaryGeneratedColumn,
   Timestamp,
   UpdateDateColumn,
@@ -12,7 +16,7 @@ import {
   name: 'performance',
 })
 export class Performance {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ type: 'int', name: 'performanceId' })
   performanceId: number;
 
   @Column({ type: 'varchar', nullable: false })
@@ -41,4 +45,10 @@ export class Performance {
 
   @DeleteDateColumn()
   deletedAt?: Timestamp;
+
+  @OneToMany(() => Ticket, (ticket) => ticket.PerformanceId)
+  ticket: Ticket[];
+
+  @OneToMany(() => Place, (place) => place.PerformanceId)
+  place: Place[];
 }

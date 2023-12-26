@@ -6,6 +6,7 @@ import { JwtStrategy } from './jwt.strategy';
 import { UserModule } from 'src/user/user.module';
 import { JwtNaverStrategy } from './naver.strategy';
 import { AuthService } from './auth.service';
+import { PerformanceModule } from 'src/performance/performance.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { AuthService } from './auth.service';
       inject: [ConfigService],
     }),
     UserModule,
+    PerformanceModule,
   ],
   providers: [AuthService, JwtStrategy, JwtNaverStrategy],
   exports: [AuthService, JwtModule, PassportModule],

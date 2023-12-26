@@ -16,6 +16,17 @@ import { Performance } from './performance/entities/performance.entity';
 import { AuthMiddleWare } from './auth/auth.middleware';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { PerformanceModule } from './performance/performance.module';
+import { PointModule } from './point/point.module';
+import { Point } from './point/entities/point.entity';
+import { PaymentModule } from './payment/payment.module';
+import { TicketModule } from './ticket/ticket.module';
+import { PlaceModule } from './place/place.module';
+import { SeatModule } from './seat/seat.module';
+import { Payment } from './payment/entities/payment.entity';
+import { Place } from './place/entities/place.entity';
+import { Seat } from './seat/entities/seat.entity';
+import { Ticket } from './ticket/entities/ticket.entity';
 
 const typeOrmModuleOptions = {
   useFactory: async (
@@ -28,7 +39,7 @@ const typeOrmModuleOptions = {
     host: configService.get('DB_HOST'),
     port: configService.get('DB_PORT'),
     database: configService.get('DB_NAME'),
-    entities: [User, Performance],
+    entities: [User, Performance, Point, Payment, Place, Seat, Ticket],
     synchronize: configService.get('DB_SYNC'),
     logging: true,
   }),
@@ -52,6 +63,12 @@ const typeOrmModuleOptions = {
     TypeOrmModule.forRootAsync(typeOrmModuleOptions),
     AuthModule,
     UserModule,
+    PerformanceModule,
+    PointModule,
+    PaymentModule,
+    TicketModule,
+    PlaceModule,
+    SeatModule,
   ],
   controllers: [AppController],
   providers: [AppService, AuthMiddleWare],
@@ -60,6 +77,9 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AuthMiddleWare)
-      .forRoutes({ path: 'user/check', method: RequestMethod.GET });
+      .forRoutes(
+        { path: 'performance', method: RequestMethod.POST },
+        { path: 'user/check', method: RequestMethod.GET },
+      );
   }
 }

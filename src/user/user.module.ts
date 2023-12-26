@@ -5,6 +5,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { PointModule } from 'src/point/point.module';
+import { Point } from 'src/point/entities/point.entity';
 
 @Module({
   imports: [
@@ -14,7 +16,8 @@ import { ConfigService } from '@nestjs/config';
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Point]),
+    PointModule,
   ],
   providers: [UserService],
   controllers: [UserController],
