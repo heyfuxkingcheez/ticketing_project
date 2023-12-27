@@ -8,6 +8,7 @@ import { Performance } from './entities/performance.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreatePerformanceDto } from './dto/create-performance.dto';
 import { Request } from 'express';
+import { UpdatePerformanceDto } from './dto/update-performance.dto';
 
 @Injectable()
 export class PerformanceService {
@@ -24,14 +25,7 @@ export class PerformanceService {
     age: number,
     price: number,
     image: string,
-    req: any,
   ) {
-    const { role } = req.user;
-
-    if (role !== 1) {
-      throw new UnauthorizedException('권한이 없습니다.');
-    }
-
     const post = await this.performanceRepository.save({
       performanceTitle,
       startTime,
@@ -62,15 +56,8 @@ export class PerformanceService {
   // 공연 수정
   async update(
     performanceId: number,
-    createPerformanceDto: CreatePerformanceDto,
-    req: any,
+    updatePerformanceDto: UpdatePerformanceDto,
   ) {
-    const { role } = req.user;
-
-    if (role !== 1) {
-      throw new UnauthorizedException('권한이 없습니다.');
-    }
-
     const existperformance = await this.performanceRepository.findOne({
       where: { performanceId },
     });
@@ -81,18 +68,13 @@ export class PerformanceService {
 
     const updatePerformance = await this.performanceRepository.update(
       performanceId,
-      createPerformanceDto,
+      updatePerformanceDto,
     );
     return { updatePerformance };
   }
 
   // 공연 삭제
-  async remove(performanceId: number, req: any) {
-    const { role } = req.user;
-
-    if (role !== 1) {
-      throw new UnauthorizedException('권한이 없습니다.');
-    }
+  async remove(performanceId: number) {
     const existperformance = await this.performanceRepository.findOne({
       where: { performanceId },
     });

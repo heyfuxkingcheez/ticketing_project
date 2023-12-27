@@ -12,18 +12,20 @@ import {
 import { PerformanceService } from './performance.service';
 import { CreatePerformanceDto } from './dto/create-performance.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from 'src/auth/roles.guard';
+import { Roles } from 'src/auth/roles.decorator';
+import { Role } from 'src/user/types/userRole.type';
+import { UpdatePerformanceDto } from './dto/update-performance.dto';
 
 @Controller('performance')
 export class PerformanceController {
   constructor(private readonly performanceService: PerformanceService) {}
 
   // 공연 등록
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(RolesGuard)
+  @Roles(Role.Admin)
   @Post()
-  async create(
-    @Req() req: any,
-    @Body() createPerformanceDto: CreatePerformanceDto,
-  ) {
+  async create(@Body() createPerformanceDto: CreatePerformanceDto) {
     return await this.performanceService.create(
       createPerformanceDto.performanceTitle,
       createPerformanceDto.startTime,
@@ -31,7 +33,6 @@ export class PerformanceController {
       createPerformanceDto.age,
       createPerformanceDto.price,
       createPerformanceDto.image,
-      req,
     );
   }
 
@@ -48,24 +49,21 @@ export class PerformanceController {
   }
 
   // 공연 수정
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(RolesGuard)
+  @Roles(Role.Admin)
   @Patch(':performanceId')
   update(
     @Param('performanceId') performanceId: string,
-    @Body() createPerformanceDto: CreatePerformanceDto,
-    @Req() req: any,
+    @Body() updatePerformanceDto: UpdatePerformanceDto,
   ) {
-    return this.performanceService.update(
-      +performanceId,
-      createPerformanceDto,
-      req,
-    );
+    return this.performanceService.update(+performanceId, updatePerformanceDto);
   }
 
   // 공연 삭제
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(RolesGuard)
+  @Roles(Role.Admin)
   @Delete(':performanceId')
-  remove(@Param('performanceId') performanceId: string, @Req() req: any) {
-    return this.performanceService.remove(+performanceId, req);
+  remove(@Param('performanceId') performanceId: string) {
+    return this.performanceService.remove(+performanceId);
   }
 }

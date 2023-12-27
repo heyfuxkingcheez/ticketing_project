@@ -23,12 +23,6 @@ export class Payment {
   @Column({ type: 'int', name: 'UserId' })
   UserId: number;
 
-  @Column({ type: 'int', name: 'TicketId' })
-  TicketId: number;
-
-  @Column({ type: 'varchar', name: 'performanceTitle' })
-  performanceTitle: string;
-
   @Column({ type: 'boolean', name: 'status' })
   status: boolean;
 

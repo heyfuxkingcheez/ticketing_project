@@ -1,5 +1,6 @@
 import { Payment } from 'src/payment/entities/payment.entity';
 import { Performance } from 'src/performance/entities/performance.entity';
+import { Place } from 'src/place/entities/place.entity';
 import { Seat } from 'src/seat/entities/seat.entity';
 import {
   Column,
@@ -27,6 +28,9 @@ export class Ticket {
   @Column({ type: 'int', name: 'SeatId' })
   SeatId: number;
 
+  @Column({ type: 'int', name: 'PlaceId' })
+  PlaceId: number;
+
   @Column({ type: 'int', name: 'PerformanceId' })
   PerformanceId: number;
 
@@ -50,6 +54,7 @@ export class Ticket {
   @JoinColumn({ name: 'PaymentId' })
   payment: Payment;
 
-  @OneToMany(() => Seat, (seat) => seat.TicketId)
-  seat: Seat[];
+  @ManyToOne(() => Place, (place) => place.placeId)
+  @JoinColumn({ name: 'PlaceId' })
+  place: Place;
 }

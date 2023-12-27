@@ -1,5 +1,6 @@
 import { Performance } from 'src/performance/entities/performance.entity';
 import { Seat } from 'src/seat/entities/seat.entity';
+import { Ticket } from 'src/ticket/entities/ticket.entity';
 import {
   Column,
   CreateDateColumn,
@@ -8,6 +9,7 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   Timestamp,
   UpdateDateColumn,
@@ -25,7 +27,7 @@ export class Place {
   PerformanceId: number;
 
   @Column({ type: 'varchar', name: 'place' })
-  place: number;
+  place: string;
 
   @CreateDateColumn()
   createdAt: Timestamp;
@@ -39,7 +41,12 @@ export class Place {
   @OneToMany(() => Seat, (seat) => seat.PlaceId)
   seat: Seat[];
 
-  @ManyToOne(() => Performance, (performance) => performance.performanceId)
-  @JoinColumn({name: 'PerformanceId'})
+  @ManyToOne(() => Performance, (performance) => performance.performanceId, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'PerformanceId' })
   performance: Performance;
+
+  @OneToMany(() => Ticket, (ticket) => ticket.PlaceId)
+  ticket: Ticket[];
 }

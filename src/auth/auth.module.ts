@@ -7,6 +7,7 @@ import { UserModule } from 'src/user/user.module';
 import { JwtNaverStrategy } from './naver.strategy';
 import { AuthService } from './auth.service';
 import { PerformanceModule } from 'src/performance/performance.module';
+import { NaverAuthGuard } from './naver.auth.guard';
 
 @Module({
   imports: [
@@ -23,7 +24,7 @@ import { PerformanceModule } from 'src/performance/performance.module';
     UserModule,
     PerformanceModule,
   ],
-  providers: [AuthService, JwtStrategy, JwtNaverStrategy],
+  providers: [AuthService, JwtStrategy, JwtNaverStrategy, NaverAuthGuard],
   exports: [AuthService, JwtModule, PassportModule],
 })
 export class AuthModule {}

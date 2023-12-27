@@ -19,9 +19,6 @@ export class Seat {
   @PrimaryGeneratedColumn({ type: 'int', name: 'seatId' })
   seatId: number;
 
-  @Column({ type: 'int', name: 'TicketId' })
-  TicketId: number;
-
   @Column({ type: 'int', name: 'PlaceId' })
   PlaceId: number;
 
@@ -43,8 +40,4 @@ export class Seat {
   @ManyToOne(() => Place, (place) => place.placeId)
   @JoinColumn({ name: 'PlaceId' })
   place: Place;
-
-  @ManyToOne(() => Ticket, (ticket) => ticket.ticketId)
-  @JoinColumn({ name: 'TicketId' })
-  ticket: Ticket;
 }

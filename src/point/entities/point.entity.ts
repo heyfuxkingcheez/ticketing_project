@@ -22,7 +22,9 @@ export class Point {
   @CreateDateColumn()
   createdAt: Timestamp;
 
-  @OneToOne(() => User, (user) => user.userId)
+  @OneToOne(() => User, (user) => user.userId, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'UserId' })
   user: User;
 }

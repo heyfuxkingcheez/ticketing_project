@@ -1,6 +1,9 @@
+@domain = http://localhost:3000
+@AccessToken = {{loginToken.response.body.$.accessToken}}
+
 #회원가입
 ###
-POST http://localhost:3000/user/register
+POST {{domain}}/user/register
 Content-Type: application/json
 
 {
@@ -8,24 +11,89 @@ Content-Type: application/json
   "password": "example@gmail.com",
   "name": "정기욱",
   "sex": "M",
-  "phone": "010-9245-2826"
+  "phone": "01092452826"
 }
 
 #로그인
 ###
-POST http://localhost:3000/user/login
+# @name loginToken
+POST {{domain}}/user/login
 Content-Type: application/json
 
 {
   "email": "example@gmail.com",
-  "password": "aaaa1234"
+  "password": "example@gmail.com"
 }
 
 #정보 조회
 ###
-GET http://localhost:3000/user/14
+GET {{domain}}/user/5
+Authorization: Bearer {{AccessToken}}
 
 
 #네이버 로그인
 ###
-GET  http://localhost:3000/user/login/naver
+GET  {{domain}}/user/login/naver
+
+#공연 등록
+###
+POST {{domain}}/performance
+Content-Type: application/json
+Authorization: Bearer {{AccessToken}}
+
+{
+	"performanceTitle": "뮤지컬 <렌트>",
+	"startTime": "2023-11-11",
+	"endTime": "2024-02-25",
+	"age": 14,
+	"price": 70000,
+	"image": "https://ticketimage.interpark.com/Play/image/large/23/23013171_p.gif"
+}
+
+#공연 수정
+###
+PATCH {{domain}}/performance/11
+Content-Type: application/json
+Authorization: Bearer {{AccessToken}}
+
+{
+	"performanceTitle": "쏘우",
+	"startTime": "2023-12-26 02:22:07.114248",
+	"endTime": "2023-12-26 02:22:09.114248",
+	"age": 18,
+	"price": 35000
+}
+
+#공연 삭제
+###
+DELETE {{domain}}/performance/10
+Content-Type: application/json
+Authorization: Bearer {{AccessToken}}
+
+#장소 등록
+###
+POST {{domain}}/place
+Content-Type: application/json
+Authorization: Bearer {{AccessToken}}
+
+{
+  "PerformanceId": 9,
+  "place": "coex 신한카드 artium"
+} 
+
+#장소 수정
+###
+PATCH {{domain}}/place/
+Content-Type: application/json
+Authorization: : Bearer {{AccessToken}}
+
+{
+  "PerformanceId":9,
+  "place": "광장동 악스홀"
+}
+
+#장소 삭제
+###
+DELETE  {{domain}}/place/7
+Content-Type: application/json
+Authorization: Bearer {{AccessToken}}

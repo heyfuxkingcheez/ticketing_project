@@ -1,11 +1,29 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { CreatePlaceDto } from './dto/create-place.dto';
 import { UpdatePlaceDto } from './dto/update-place.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Place } from './entities/place.entity';
+import { Repository } from 'typeorm';
+import { NotFoundError } from 'rxjs';
 
 @Injectable()
 export class PlaceService {
-  create(createPlaceDto: CreatePlaceDto) {
-    return 'This action adds a new place';
+  constructor(
+    @InjectRepository(Place)
+    private placeRepository: Repository<Place>,
+  ) {}
+
+  // 장소 등록
+  async create(PerformanceId: number, place: string) {
+    const createdPlace = await this.placeRepository.save({
+      PerformanceId,
+      place,
+    });
+    return createdPlace;
   }
 
   findAll() {
@@ -20,7 +38,16 @@ export class PlaceService {
     return `This action updates a #${id} place`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} place`;
+  async remove(placeId: number) {
+    const existPlace = await this.placeRepository.findOne({
+      where: { placeId },
+    });
+
+    if (!existPlace) {
+      throw new NotFoundException('존재하지 않은 데이터입니다.');
+    }
+    await this.placeRepository.softDelete(placeId);
+
+    return { message: '삭제 완료' };
   }
 }

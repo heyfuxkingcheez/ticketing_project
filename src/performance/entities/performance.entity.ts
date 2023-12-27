@@ -19,7 +19,7 @@ export class Performance {
   @PrimaryGeneratedColumn({ type: 'int', name: 'performanceId' })
   performanceId: number;
 
-  @Column({ type: 'varchar', nullable: false })
+  @Column({ type: 'varchar', name: 'performanceTitle', nullable: false })
   performanceTitle: string;
 
   @Column({ type: 'timestamp', nullable: false })

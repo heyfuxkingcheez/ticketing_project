@@ -1,15 +1,35 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { PlaceService } from './place.service';
 import { CreatePlaceDto } from './dto/create-place.dto';
 import { UpdatePlaceDto } from './dto/update-place.dto';
+import { Request } from 'express';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from 'src/auth/roles.guard';
+import { Roles } from 'src/auth/roles.decorator';
+import { Role } from 'src/user/types/userRole.type';
 
+@UseGuards(RolesGuard)
 @Controller('place')
 export class PlaceController {
   constructor(private readonly placeService: PlaceService) {}
 
+  @Roles(Role.Admin)
   @Post()
-  create(@Body() createPlaceDto: CreatePlaceDto) {
-    return this.placeService.create(createPlaceDto);
+  async create(@Body() createPlaceDto: CreatePlaceDto) {
+    return await this.placeService.create(
+      createPlaceDto.PerformanceId,
+      createPlaceDto.place,
+    );
   }
 
   @Get()
@@ -27,8 +47,9 @@ export class PlaceController {
     return this.placeService.update(+id, updatePlaceDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.placeService.remove(+id);
+  @Roles(Role.Admin)
+  @Delete(':placeId')
+  async remove(@Param('placeId') placeId: string) {
+    return await this.placeService.remove(+placeId);
   }
 }

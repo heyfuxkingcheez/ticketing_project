@@ -1,4 +1,28 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreatePerformanceDto } from './create-performance.dto';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { isString } from 'lodash';
 
-export class UpdatePerformanceDto extends PartialType(CreatePerformanceDto) {}
+export class UpdatePerformanceDto {
+  @IsOptional()
+  @IsString()
+  performanceTitle?: string;
+
+  @IsOptional()
+  @IsString()
+  startTime?: string;
+
+  @IsOptional()
+  @IsString()
+  endTime?: string;
+
+  @IsOptional()
+  @IsNumber()
+  age?: number;
+
+  @IsOptional()
+  @IsNumber()
+  price?: number;
+
+  @IsOptional()
+  @IsString()
+  image?: string;
+}
