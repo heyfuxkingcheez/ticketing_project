@@ -1,14 +1,14 @@
-import { Place } from 'src/place/entities/place.entity';
-import { Ticket } from 'src/ticket/entities/ticket.entity';
+import { Reservation } from 'src/reservation/entities/reservation.entity';
+import { Schedule } from 'src/schedule/entities/schedule.entity';
+import { Seat } from 'src/seat/entities/seat.entity';
+import { Category } from 'src/user/types/performance.type';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  JoinColumn,
   OneToMany,
   PrimaryGeneratedColumn,
-  Timestamp,
   UpdateDateColumn,
 } from 'typeorm';
 
@@ -22,11 +22,8 @@ export class Performance {
   @Column({ type: 'varchar', name: 'performanceTitle', nullable: false })
   performanceTitle: string;
 
-  @Column({ type: 'timestamp', nullable: false })
-  startTime: Timestamp;
-
-  @Column({ type: 'timestamp', nullable: false })
-  endTime: Timestamp;
+  @Column({ type: 'enum', enum: Category })
+  category: Category;
 
   @Column({ type: 'int', nullable: false })
   age: number;
@@ -35,20 +32,35 @@ export class Performance {
   price: number;
 
   @Column({ type: 'varchar', nullable: false })
-  image: string;
+  imageUrl: string;
+
+  @Column({ type: 'int' })
+  hours: number;
+
+  @Column({ type: 'varchar', nullable: false })
+  place: string;
+
+  @Column({ type: 'varchar' })
+  startDate: string;
+
+  @Column({ type: 'varchar' })
+  endDate: string;
 
   @CreateDateColumn()
-  createdAt: Timestamp;
+  createdAt: Date;
 
   @UpdateDateColumn()
-  updatedAt: Timestamp;
+  updatedAt: Date;
 
   @DeleteDateColumn()
-  deletedAt?: Timestamp;
+  deletedAt: Date;
 
-  @OneToMany(() => Ticket, (ticket) => ticket.PerformanceId)
-  ticket: Ticket[];
+  @OneToMany(() => Schedule, (schedule) => schedule.performance)
+  schedules: Schedule[];
 
-  @OneToMany(() => Place, (place) => place.PerformanceId)
-  place: Place[];
+  @OneToMany(() => Reservation, (reservation) => reservation.performance)
+  reservations: Reservation[];
+
+  @OneToMany(() => Seat, (seat) => seat.performance)
+  seat: Seat[];
 }

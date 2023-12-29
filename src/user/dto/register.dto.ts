@@ -12,7 +12,7 @@ export class RegisterDto {
   name: string;
 
   @IsNotEmpty({ message: '성별을 입력해주세요' })
-  sex: string;
+  sex: boolean;
 
   @IsNumberString()
   @IsNotEmpty({ message: '휴대폰 번호를 입력해주세요.' })

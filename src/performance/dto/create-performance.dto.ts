@@ -1,14 +1,12 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsEnum, IsNotEmpty } from 'class-validator';
+import { Category } from 'src/user/types/performance.type';
 
 export class CreatePerformanceDto {
   @IsNotEmpty({ message: '공연 이름을 입력해주세요.' })
   performanceTitle: string;
 
-  @IsNotEmpty({ message: '공연 시작 시각을 입력해주세요.' })
-  startTime: string;
-
-  @IsNotEmpty({ message: '공연 시작 시각을 입력해주세요.' })
-  endTime: string;
+  @IsEnum(Category)
+  category: Category;
 
   @IsNotEmpty({ message: '관람연령을 입력해주세요.' })
   age: number;
@@ -17,5 +15,17 @@ export class CreatePerformanceDto {
   price: number;
 
   @IsNotEmpty({ message: '이미지 주소를 입력해주세요' })
-  image: string;
+  imageUrl: string;
+
+  @IsNotEmpty({ message: '관람 시간을 입력해주세요' })
+  hours: number;
+
+  @IsNotEmpty({ message: '장소를 입력해주세요' })
+  place: string;
+
+  @IsNotEmpty({ message: '시작일을 입력해주세요.' })
+  startDate: string;
+
+  @IsNotEmpty({ message: '종료일을 입력해주세요.' })
+  endDate: string;
 }

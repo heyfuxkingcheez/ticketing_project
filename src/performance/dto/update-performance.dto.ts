@@ -1,18 +1,14 @@
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
 import { isString } from 'lodash';
+import { Category } from 'src/user/types/performance.type';
 
 export class UpdatePerformanceDto {
   @IsOptional()
   @IsString()
   performanceTitle?: string;
 
-  @IsOptional()
-  @IsString()
-  startTime?: string;
-
-  @IsOptional()
-  @IsString()
-  endTime?: string;
+  @IsEnum(Category)
+  category?: Category;
 
   @IsOptional()
   @IsNumber()
@@ -24,5 +20,21 @@ export class UpdatePerformanceDto {
 
   @IsOptional()
   @IsString()
-  image?: string;
+  imageUrl?: string;
+
+  @IsOptional()
+  @IsString()
+  place?: string;
+
+  @IsOptional()
+  @IsNumber()
+  hours?: number;
+
+  @IsOptional()
+  @IsString()
+  startDate?: string;
+
+  @IsOptional()
+  @IsString()
+  endDate?: string;
 }

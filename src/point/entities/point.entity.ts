@@ -4,9 +4,8 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
-  OneToOne,
+  ManyToOne,
   PrimaryGeneratedColumn,
-  Timestamp,
 } from 'typeorm';
 
 @Entity({
@@ -15,16 +14,25 @@ import {
 export class Point {
   @PrimaryGeneratedColumn({ type: 'int', name: 'pointId' })
   pointId: number;
+
   @Column({ type: 'int', name: 'UserId' })
   UserId: number;
-  @Column({ type: 'int', name: 'balance', default: 1000000 })
-  balance: number;
-  @CreateDateColumn()
-  createdAt: Timestamp;
 
-  @OneToOne(() => User, (user) => user.userId, {
+  @ManyToOne(() => User, (user) => user.userId, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'UserId' })
   user: User;
+
+  @Column()
+  income: number;
+
+  @Column()
+  expense: number;
+
+  @Column({ type: 'int', name: 'balance', default: 1000000 })
+  balance: number;
+
+  @CreateDateColumn()
+  createdAt: Date;
 }

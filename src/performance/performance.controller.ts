@@ -26,14 +26,7 @@ export class PerformanceController {
   @Roles(Role.Admin)
   @Post()
   async create(@Body() createPerformanceDto: CreatePerformanceDto) {
-    return await this.performanceService.create(
-      createPerformanceDto.performanceTitle,
-      createPerformanceDto.startTime,
-      createPerformanceDto.endTime,
-      createPerformanceDto.age,
-      createPerformanceDto.price,
-      createPerformanceDto.image,
-    );
+    return await this.performanceService.create(createPerformanceDto);
   }
 
   // 공연 전체 조회

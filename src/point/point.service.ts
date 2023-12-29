@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { CreatePointDto } from './entities/dto/create-point.dto';
-import { UpdatePointDto } from './entities/dto/update-point.dto';
+import { CreatePointDto } from './dto/create-point.dto';
+import { UpdatePointDto } from './dto/update-point.dto';
 
 @Injectable()
 export class PointService {

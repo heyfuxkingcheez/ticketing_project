@@ -7,8 +7,8 @@ import { Repository } from 'typeorm';
 import { Performance } from './entities/performance.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreatePerformanceDto } from './dto/create-performance.dto';
-import { Request } from 'express';
 import { UpdatePerformanceDto } from './dto/update-performance.dto';
+import { Schedule } from 'src/schedule/entities/schedule.entity';
 
 @Injectable()
 export class PerformanceService {
@@ -18,22 +18,8 @@ export class PerformanceService {
   ) {}
 
   // 공연 등록
-  async create(
-    performanceTitle: string,
-    startTime: string,
-    endTime: string,
-    age: number,
-    price: number,
-    image: string,
-  ) {
-    const post = await this.performanceRepository.save({
-      performanceTitle,
-      startTime,
-      endTime,
-      age,
-      price,
-      image,
-    });
+  async create(createPerformanceDto: CreatePerformanceDto) {
+    const post = await this.performanceRepository.save(createPerformanceDto);
 
     return { post };
   }
@@ -63,7 +49,7 @@ export class PerformanceService {
     });
 
     if (!existperformance) {
-      throw new NotFoundException('존재하지 않은 데이터입니다..');
+      throw new NotFoundException('존재하지 않은 데이터입니다.');
     }
 
     const updatePerformance = await this.performanceRepository.update(
@@ -80,7 +66,7 @@ export class PerformanceService {
     });
 
     if (!existperformance) {
-      throw new NotFoundException('존재하지 않은 데이터입니다..');
+      throw new NotFoundException('존재하지 않은 데이터입니다.');
     }
     await this.performanceRepository.softDelete(performanceId);
 

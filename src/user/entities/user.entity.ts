@@ -4,14 +4,12 @@ import {
   DeleteDateColumn,
   Entity,
   Index,
-  JoinColumn,
-  OneToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
-  Timestamp,
   UpdateDateColumn,
 } from 'typeorm';
 import { Role } from '../types/userRole.type';
-import { Point } from '../../point/entities/point.entity';
+import { Point } from 'src/point/entities/point.entity';
 
 @Index('email', ['email'], { unique: true })
 @Entity({
@@ -20,26 +18,34 @@ import { Point } from '../../point/entities/point.entity';
 export class User {
   @PrimaryGeneratedColumn({ name: 'userId' })
   userId: number;
-  @Column({ type: 'varchar', unique: true, nullable: false })
+
+  @OneToMany(() => Point, (point) => point.user)
+  point: Point[];
+
+  @Column({ type: 'varchar', unique: true })
   email: string;
-  @Column({ type: 'varchar', select: false, nullable: false })
+
+  @Column({ type: 'varchar' })
   password: string;
-  @Column({ type: 'varchar', nullable: false })
+
+  @Column({ type: 'varchar' })
   name: string;
-  @Column({ type: 'varchar', nullable: false })
-  sex: string;
-  @Column({ type: 'varchar', nullable: false })
+
+  @Column({ type: 'varchar' })
   phone: string;
 
-  @CreateDateColumn()
-  createdAt: Timestamp;
-
-  @UpdateDateColumn()
-  updatedAt: Timestamp;
-
-  @DeleteDateColumn()
-  deletedAt?: Timestamp;
+  @Column({ type: 'boolean' })
+  sex: boolean;
 
   @Column({ type: 'enum', enum: Role, default: Role.User })
   role: Role;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  @DeleteDateColumn()
+  deletedAt?: Date;
 }

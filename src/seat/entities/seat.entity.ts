@@ -1,5 +1,4 @@
-import { Place } from 'src/place/entities/place.entity';
-import { Ticket } from 'src/ticket/entities/ticket.entity';
+import { Performance } from 'src/performance/entities/performance.entity';
 import {
   Column,
   CreateDateColumn,
@@ -19,14 +18,18 @@ export class Seat {
   @PrimaryGeneratedColumn({ type: 'int', name: 'seatId' })
   seatId: number;
 
-  @Column({ type: 'int', name: 'PlaceId' })
-  PlaceId: number;
+  @ManyToOne(() => Performance, (performance) => performance.seat)
+  @JoinColumn({ name: 'PerformanceId' })
+  performance: Performance;
 
   @Column({ type: 'varchar', name: 'grade' })
   grade: string;
 
   @Column({ type: 'int', name: 'seatNum' })
   seatNum: number;
+
+  @Column({ type: 'boolean', name: 'status', default: false })
+  status: boolean;
 
   @CreateDateColumn()
   createdAt: Timestamp;
@@ -36,8 +39,4 @@ export class Seat {
 
   @DeleteDateColumn()
   deletedAt?: Timestamp;
-
-  @ManyToOne(() => Place, (place) => place.placeId)
-  @JoinColumn({ name: 'PlaceId' })
-  place: Place;
 }

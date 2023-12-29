@@ -11,6 +11,7 @@ import { JwtService } from '@nestjs/jwt';
 import { compare, hash } from 'bcrypt';
 import _ from 'lodash';
 import { Point } from 'src/point/entities/point.entity';
+import { string } from 'joi';
 
 @Injectable()
 export class UserService {
@@ -27,7 +28,7 @@ export class UserService {
     email: string,
     password: string,
     name: string,
-    sex: string,
+    sex: boolean,
     phone: string,
   ) {
     const existingUser = await this.findByEmail(email);
@@ -103,10 +104,14 @@ export class UserService {
 
   // 유저 정보 조회
   async getUser(userId: string) {
-    return await this.userRepository.findOne({
-      where: { userId: +userId },
-      select: ['userId', 'email', 'name', 'sex', 'phone'],
-    });
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.point', 'point')
+      .select(['user.name', 'point.balance'])
+      .where({ userId })
+      .getOne();
+
+    return user;
   }
 
   async findByEmail(email: string) {
