@@ -52,9 +52,11 @@ Authorization: Bearer {{AccessToken}}
 	"price": 70000,
 	"imageUrl": "https://ticketimage.interpark.com/Play/image/large/23/23013171_p.gif",
   "hours": 120,
-  "place": "대전",
+  "place": "정기욱",
 	"startDate": "2023-11-11",
-	"endDate": "2024-02-25"
+	"endDate": "2024-02-25",
+  "startTime": "15:00:00",
+  "endTime": "17:00:00"
 }
 
 #공연 수정
@@ -72,7 +74,8 @@ Authorization: Bearer {{AccessToken}}
   "hours": 110,
   "place": "서울",
 	"startDate": "2023-11-11",
-	"endDate": "2023-12-25"
+	"endDate": "2023-12-25",
+  
 }
 
 #공연 삭제
@@ -102,7 +105,7 @@ GET {{domain}}/schedule/21
 
 #공연 시간표 수정
 ###
-PATCH {{domain}}/schedule/21
+PATCH {{domain}}/schedule/update/50
 Content-Type: application/json
 Authorization: Bearer {{AccessToken}}
 
@@ -113,6 +116,12 @@ Authorization: Bearer {{AccessToken}}
 
 #공연 시간표 삭제
 ###
-DELETE {{domain}}/schedule/21
+DELETE {{domain}}/schedule/delete/50
 Content-Type: application/json
+Authorization: Bearer {{AccessToken}}
+
+#공연 예매
+###
+POST {{domain}}/reservation
+Content-Type: 
 Authorization: Bearer {{AccessToken}}

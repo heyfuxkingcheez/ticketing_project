@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { PerformanceService } from './performance.service';
 import { CreatePerformanceDto } from './dto/create-performance.dto';
+import { CreateScheduleDto } from './../schedule/dto/create-schedule.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { Roles } from 'src/auth/roles.decorator';
@@ -25,8 +26,17 @@ export class PerformanceController {
   @UseGuards(RolesGuard)
   @Roles(Role.Admin)
   @Post()
-  async create(@Body() createPerformanceDto: CreatePerformanceDto) {
-    return await this.performanceService.create(createPerformanceDto);
+  async create(
+    @Body()
+    createPerformanceDto: CreatePerformanceDto,
+    @Body()
+    createScheduleDto: CreateScheduleDto,
+  ) {
+    console.log(createScheduleDto);
+    return await this.performanceService.create(
+      createPerformanceDto,
+      createScheduleDto,
+    );
   }
 
   // 공연 전체 조회

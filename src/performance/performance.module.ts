@@ -6,6 +6,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { Performance } from './entities/performance.entity';
 import { User } from 'src/user/entities/user.entity';
+import { Schedule } from 'src/schedule/entities/schedule.entity';
 
 @Module({
   imports: [
@@ -15,7 +16,7 @@ import { User } from 'src/user/entities/user.entity';
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([Performance]),
+    TypeOrmModule.forFeature([Performance, Schedule]),
   ],
   providers: [PerformanceService],
   controllers: [PerformanceController],

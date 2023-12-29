@@ -45,7 +45,7 @@ export class ScheduleService {
 
   // 스케줄 전체 조회
   async findAll() {
-    return await this.performancRepository.find();
+    return await this.scheduleRepository.find();
   }
 
   // 스케줄 상세 조회
