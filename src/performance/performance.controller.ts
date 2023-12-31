@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Req,
+  Query,
 } from '@nestjs/common';
 import { PerformanceService } from './performance.service';
 import { CreatePerformanceDto } from './dto/create-performance.dto';
@@ -32,11 +33,16 @@ export class PerformanceController {
     @Body()
     createScheduleDto: CreateScheduleDto,
   ) {
-    console.log(createScheduleDto);
     return await this.performanceService.create(
       createPerformanceDto,
       createScheduleDto,
     );
+  }
+
+  // 공연 검색
+  @Get('search')
+  searchPerformances(@Query('keyword') keyword: string) {
+    return this.performanceService.search(keyword);
   }
 
   // 공연 전체 조회

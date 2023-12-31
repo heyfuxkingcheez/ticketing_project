@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { Role } from '../types/userRole.type';
 import { Point } from 'src/point/entities/point.entity';
+import { Seat } from 'src/seat/entities/seat.entity';
 
 @Index('email', ['email'], { unique: true })
 @Entity({
@@ -22,19 +23,22 @@ export class User {
   @OneToMany(() => Point, (point) => point.user)
   point: Point[];
 
-  @Column({ type: 'varchar', unique: true })
+  @OneToMany(() => Seat, (seat) => seat.user)
+  seat: Seat;
+
+  @Column({ type: 'varchar', unique: true, nullable: false })
   email: string;
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', nullable: false })
   password: string;
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', nullable: false })
   name: string;
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', nullable: false })
   phone: string;
 
-  @Column({ type: 'boolean' })
+  @Column({ type: 'boolean', nullable: false })
   sex: boolean;
 
   @Column({ type: 'enum', enum: Role, default: Role.User })

@@ -8,6 +8,7 @@ import { ConfigService } from '@nestjs/config';
 import { Schedule } from 'src/schedule/entities/schedule.entity';
 import { Point } from 'src/point/entities/point.entity';
 import { Seat } from 'src/seat/entities/seat.entity';
+import { Performance } from 'src/performance/entities/performance.entity';
 
 @Module({
   imports: [

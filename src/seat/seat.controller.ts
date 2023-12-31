@@ -1,15 +1,38 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Req,
+} from '@nestjs/common';
 import { SeatService } from './seat.service';
-import { CreateSeatDto } from './dto/create-seat.dto';
+import { CreateSeatDto, SetSeatDto } from './dto/create-seat.dto';
 import { UpdateSeatDto } from './dto/update-seat.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { Request } from 'express';
+import { string } from 'joi';
 
 @Controller('seat')
 export class SeatController {
   constructor(private readonly seatService: SeatService) {}
 
-  @Post()
-  create(@Body() createSeatDto: CreateSeatDto) {
-    return this.seatService.create(createSeatDto);
+  @UseGuards(AuthGuard('jwt'))
+  @Post(':performanceId')
+  create(
+    @Req() req: any,
+    @Body() setSeatDto: SetSeatDto,
+    @Param('performanceId') performanceId: string,
+  ) {
+    const seat = setSeatDto;
+    const id = req.user;
+    console.log('좌석 등급, 번호 ===>', seat);
+    console.log('jwt 통과 후 나온 값 ===>', id.userId);
+    console.log('공연 id ===>', +performanceId);
+    // return this.seatService.create(createSeatDto);
   }
 
   @Get()

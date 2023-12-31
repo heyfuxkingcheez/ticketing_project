@@ -27,7 +27,7 @@ Content-Type: application/json
 
 #정보 조회
 ###
-GET {{domain}}/user/6
+GET {{domain}}/user/8
 Authorization: Bearer {{AccessToken}}
 
 
@@ -38,6 +38,14 @@ GET  {{domain}}/user/login/naver
 #공연 전체 조회
 ###
 GET {{domain}}/performance
+
+#공연 상세 조회
+###
+GET {{domain}}/performance/40
+
+#공연 검색
+###
+GET {{domain}}/performance/search?keyword=렌트
 
 #공연 등록
 ###
@@ -56,7 +64,10 @@ Authorization: Bearer {{AccessToken}}
 	"startDate": "2023-11-11",
 	"endDate": "2024-02-25",
   "startTime": "15:00:00",
-  "endTime": "17:00:00"
+  "endTime": "17:00:00",
+  "standardLimit": 500,
+  "royalLimit": 300,
+  "vipLimit": 100
 }
 
 #공연 수정
@@ -86,13 +97,13 @@ Authorization: Bearer {{AccessToken}}
 
 #공연 시간표 등록
 ###
-POST {{domain}}/schedule/21
+POST {{domain}}/schedule/40
 Content-Type: application/json
 Authorization: Bearer {{AccessToken}}
 
 {
-  "startTime": "15:00:00",
-  "endTime": "17:00:00"
+  "startTime": "18:00:00",
+  "endTime": "20:00:00"
 }
 
 #공연 시간표 전체 조회
@@ -125,3 +136,14 @@ Authorization: Bearer {{AccessToken}}
 POST {{domain}}/reservation
 Content-Type: 
 Authorization: Bearer {{AccessToken}}
+
+#좌석 지정 테스트
+###
+post {{domain}}/reservation?value=34
+Content-Type: application/json
+Authorization: Bearer {{AccessToken}}
+
+[
+{"grade": "1","seatNum": 124},
+{"grade": "1","seatNum": 135}
+]

@@ -9,33 +9,41 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Point } from 'src/point/entities/point.entity';
 
 @Entity({
   name: 'reservation',
 })
 export class Reservation {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ type: 'int', name: 'reservationId' })
   reservationId: number;
 
-  @ManyToOne(() => User, (user) => user.userId)
+  @ManyToOne(() => User, (user) => user.userId, { nullable: false })
   @JoinColumn({ name: 'UserId' })
   user: User;
 
-  @ManyToOne(() => Performance, (performance) => performance.reservations)
+  @ManyToOne(() => Performance, (performance) => performance.reservations, {
+    nullable: false,
+  })
   @JoinColumn({ name: 'PerformanceId' })
   performance: Performance;
 
-  @ManyToOne(() => Seat, (seat) => seat.seatId)
-  @JoinColumn({ name: 'SeatId' })
-  seat: Seat;
+  @OneToMany(() => Seat, (seat) => seat.reservation)
+  seat: Seat[];
 
-  @ManyToOne(() => Schedule, (schedule) => schedule.reservations)
+  @OneToMany(() => Point, (point) => point.reservation)
+  point: Point[];
+
+  @ManyToOne(() => Schedule, (schedule) => schedule.reservations, {
+    nullable: false,
+  })
   @JoinColumn({ name: 'ScheduleId' })
   schedule: Schedule;
 
-  @Column()
+  @Column({ default: true })
   status: boolean;
 
   @CreateDateColumn()

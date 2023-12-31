@@ -3,7 +3,7 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, Like, Repository } from 'typeorm';
 import { Performance } from './entities/performance.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreatePerformanceDto } from './dto/create-performance.dto';
@@ -35,7 +35,6 @@ export class PerformanceService {
     try {
       const post = await this.performanceRepository.save(createPerformanceDto);
       const id: any = post.performanceId;
-      console.log('나오나?', id);
 
       // schedule 테이블 작성
       const { startTime, endTime } = createScheduleDto;
@@ -62,9 +61,12 @@ export class PerformanceService {
 
   // 공연 상세 조회
   async findOne(performanceId: number) {
-    const performance = await this.performanceRepository.findOne({
-      where: { performanceId },
-    });
+    const performance = await this.performanceRepository
+      .createQueryBuilder('performance')
+      .leftJoinAndSelect('performance.schedules', 'schedule')
+      .where({ performanceId })
+      .getOne();
+
     return { performance };
   }
 
@@ -100,5 +102,15 @@ export class PerformanceService {
     await this.performanceRepository.softDelete(performanceId);
 
     return { message: '삭제 완료' };
+  }
+
+  // 공연 검색
+  async search(keyword: string) {
+    const searchValue = await this.performanceRepository.find({
+      where: {
+        performanceTitle: Like(`%${keyword}%`),
+      },
+    });
+    return searchValue;
   }
 }

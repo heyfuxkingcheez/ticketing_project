@@ -27,10 +27,10 @@ export class Schedule {
   @JoinColumn({ name: 'PerformanceId', referencedColumnName: 'performanceId' })
   performance: Performance;
 
-  @Column({ type: 'time', name: 'start_time' })
+  @Column({ type: 'time', name: 'start_time', nullable: false })
   startTime: Date;
 
-  @Column({ type: 'time', name: 'end_time' })
+  @Column({ type: 'time', name: 'end_time', nullable: false })
   endTime: Date;
 
   @CreateDateColumn()
