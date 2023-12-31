@@ -10,6 +10,7 @@ import { CreatePerformanceDto } from './dto/create-performance.dto';
 import { UpdatePerformanceDto } from './dto/update-performance.dto';
 import { Schedule } from 'src/schedule/entities/schedule.entity';
 import { CreateScheduleDto } from 'src/schedule/dto/create-schedule.dto';
+import { UpdateScheduleDto } from 'src/schedule/dto/update-schedule.dto';
 
 @Injectable()
 export class PerformanceService {
@@ -37,11 +38,15 @@ export class PerformanceService {
       const id: any = post.performanceId;
 
       // schedule 테이블 작성
-      const { startTime, endTime } = createScheduleDto;
+      const { startTime, endTime, standardLimit, royalLimit, vipLimit } =
+        createScheduleDto;
       await this.scheduleRepository.save({
         performance: id,
         startTime,
         endTime,
+        standardLimit,
+        royalLimit,
+        vipLimit,
       });
       await queryRunner.commitTransaction();
       return { post };

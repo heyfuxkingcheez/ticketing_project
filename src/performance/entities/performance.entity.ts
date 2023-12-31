@@ -31,7 +31,7 @@ export class Performance {
   @Column({ type: 'int', nullable: false })
   price: number;
 
-  @Column({ type: 'varchar', nullable: false })
+  @Column({ type: 'varchar', length: 255, nullable: false })
   imageUrl: string;
 
   @Column({ type: 'int', nullable: false })
@@ -45,15 +45,6 @@ export class Performance {
 
   @Column({ type: 'varchar', nullable: false })
   endDate: string;
-
-  @Column({ type: 'int', nullable: false })
-  standardLimit: number;
-
-  @Column({ type: 'int', nullable: false })
-  royalLimit: number;
-
-  @Column({ type: 'int', nullable: false })
-  vipLimit: number;
 
   @CreateDateColumn()
   createdAt: Date;

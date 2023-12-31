@@ -64,15 +64,12 @@ Authorization: Bearer {{AccessToken}}
 	"startDate": "2023-11-11",
 	"endDate": "2024-02-25",
   "startTime": "15:00:00",
-  "endTime": "17:00:00",
-  "standardLimit": 500,
-  "royalLimit": 300,
-  "vipLimit": 100
+  "endTime": "17:00:00"
 }
 
 #공연 수정
-###
-PATCH {{domain}}/performance/16
+### 
+PATCH {{domain}}/performance/2
 Content-Type: application/json
 Authorization: Bearer {{AccessToken}}
 
@@ -86,7 +83,7 @@ Authorization: Bearer {{AccessToken}}
   "place": "서울",
 	"startDate": "2023-11-11",
 	"endDate": "2023-12-25",
-  
+
 }
 
 #공연 삭제
@@ -112,17 +109,20 @@ GET {{domain}}/schedule
 
 #공연 시간표 상세 조회
 ###
-GET {{domain}}/schedule/21
+GET {{domain}}/schedule/1
 
 #공연 시간표 수정
 ###
-PATCH {{domain}}/schedule/update/50
+PATCH {{domain}}/schedule/update/1
 Content-Type: application/json
 Authorization: Bearer {{AccessToken}}
 
 {
-  "startTime": "15:00:00",
-  "endTime": "17:00:00"
+  "startTime": "13:00:00",
+  "endTime": "15:00:00",
+  "standardLimit": 100,
+  "royalLimit": 100,
+  "vipLimit": 100
 }
 
 #공연 시간표 삭제
@@ -139,11 +139,11 @@ Authorization: Bearer {{AccessToken}}
 
 #좌석 지정 테스트
 ###
-post {{domain}}/reservation?value=34
+post {{domain}}/reservation?value=2
 Content-Type: application/json
 Authorization: Bearer {{AccessToken}}
 
 [
-{"grade": "1","seatNum": 124},
-{"grade": "1","seatNum": 135}
+{"grade": "STANDARD","seatNum": 130},
+{"grade": "ROYAL","seatNum": 131}
 ]

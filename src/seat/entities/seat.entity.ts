@@ -1,5 +1,6 @@
 import { Performance } from 'src/performance/entities/performance.entity';
 import { Reservation } from 'src/reservation/entities/reservation.entity';
+import { Schedule } from 'src/schedule/entities/schedule.entity';
 import { User } from 'src/user/entities/user.entity';
 import { Grade } from 'src/user/types/grade.type';
 import {
@@ -36,6 +37,12 @@ export class Seat {
   })
   @JoinColumn({ name: 'ReservationId' })
   reservation: Reservation;
+
+  @ManyToOne(() => Schedule, (schedule) => schedule.seats, {
+    nullable: false,
+  })
+  @JoinColumn({ name: 'ScheduleId', referencedColumnName: 'scheduleId' })
+  schedules: Schedule;
 
   @Column({ type: 'enum', enum: Grade })
   grade: Grade;

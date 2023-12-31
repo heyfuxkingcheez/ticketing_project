@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { ScheduleService } from './schedule.service';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
@@ -40,12 +41,13 @@ export class ScheduleController {
 
   @UseGuards(RolesGuard)
   @Roles(Role.Admin)
-  @Patch('update/:id')
+  @Patch('update/:scheduleId')
   update(
-    @Param('id') id: string,
+    @Param() scheduleId: string,
     @Body() createScheduleDto: CreateScheduleDto,
   ) {
-    return this.scheduleService.update(createScheduleDto, +id);
+    console.log('컨트롤러에서 스케줄 아이디', scheduleId);
+    return this.scheduleService.update(createScheduleDto, scheduleId);
   }
 
   @UseGuards(RolesGuard)

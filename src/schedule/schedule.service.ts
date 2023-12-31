@@ -56,10 +56,11 @@ export class ScheduleService {
     return scheduleDetail;
   }
 
-  async update(createScheduleDto: CreateScheduleDto, id: any) {
+  async update(createScheduleDto: CreateScheduleDto, scheduleId: string) {
     try {
+      console.log('스케줄 아이디', scheduleId);
       const updatedSchedule = await this.scheduleRepository.update(
-        id,
+        scheduleId,
         createScheduleDto,
       );
       return { updatedSchedule };

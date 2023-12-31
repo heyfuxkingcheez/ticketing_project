@@ -20,21 +20,19 @@ export class Point {
   UserId: number;
 
   @ManyToOne(() => User, (user) => user.userId, {
-    onDelete: 'CASCADE',
+    // onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'UserId' })
   user: User;
 
-  @ManyToOne(() => Reservation, (reservation) => reservation.point, {
-    nullable: false,
-  })
+  @ManyToOne(() => Reservation, (reservation) => reservation.point)
   @JoinColumn({ name: 'ReservationId' })
   reservation: Reservation;
 
-  @Column({ type: 'int', nullable: false })
+  @Column({ type: 'int', default: 1000000, nullable: false })
   income: number;
 
-  @Column({ type: 'int', nullable: false })
+  @Column({ type: 'int', default: 0, nullable: false })
   expense: number;
 
   @Column({ type: 'int', name: 'balance', default: 1000000, nullable: false })

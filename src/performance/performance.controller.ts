@@ -14,10 +14,12 @@ import { PerformanceService } from './performance.service';
 import { CreatePerformanceDto } from './dto/create-performance.dto';
 import { CreateScheduleDto } from './../schedule/dto/create-schedule.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { RolesGuard } from 'src/auth/roles.guard';
+
 import { Roles } from 'src/auth/roles.decorator';
 import { Role } from 'src/user/types/userRole.type';
 import { UpdatePerformanceDto } from './dto/update-performance.dto';
+import { RolesGuard } from 'src/auth/roles.guard';
+import { UpdateScheduleDto } from 'src/schedule/dto/update-schedule.dto';
 
 @Controller('performance')
 export class PerformanceController {

@@ -1,5 +1,5 @@
 export enum Grade {
-  STANDARD,
-  ROYAL,
-  VIP,
+  STANDARD = 'STANDARD',
+  ROYAL = 'ROYAL',
+  VIP = 'VIP',
 }
