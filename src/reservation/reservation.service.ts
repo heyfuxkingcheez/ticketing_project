@@ -33,25 +33,25 @@ export class ReservationService {
   ) {}
 
   // 공연 예매
-  async create(seat: any, id: any, value: any) {
+  async create(seat: any, id: any, value: any, bodyScheduleId: number) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
-    await queryRunner.startTransaction();
+    await queryRunner.startTransaction('READ COMMITTED'); // 격리 수준
 
     console.log('서비스 seat: ', seat);
-    console.log('서비스 유저id: ', id);
+    console.log('서비스 유저 id: ', id);
     console.log('서비스 퍼포먼스 id: ', value);
+    console.log('서비스 스케줄 id: ', bodyScheduleId);
     try {
       // 공연 테이블에서 가격, 등급별 개수 가져오기
       const gradeInfo = await this.performanceRepository.findOne({
         where: { performanceId: value },
-        // select: ['price'],
       });
       console.log('공연 가격 ===>', gradeInfo.price);
 
       // 스케줄 id
       const schedule: any = await this.scheduleRepository.findOne({
-        where: { performance: value },
+        where: { scheduleId: bodyScheduleId },
         select: ['scheduleId', 'standardLimit', 'royalLimit', 'vipLimit'],
       });
       console.log('스케줄아이디, 등급별 리밋 수 ==>', schedule);
@@ -111,7 +111,7 @@ export class ReservationService {
         }
         // 좌석 저장
         if (isWithinLimit) {
-          const orderSeat = await queryRunner.manager.save(Seat, {
+          await queryRunner.manager.save(Seat, {
             performance: value,
             user: id,
             reservation: createdReservation.reservationId,
@@ -128,13 +128,14 @@ export class ReservationService {
       }
       // 3. 포인트 결제
       console.log('구매한 공연 좌석 총 가격 ===>', totalPoint);
-      const lastPoint = await this.pointRepository.find({
+      const lastPoint = await queryRunner.manager.find(Point, {
         where: { user: id },
         order: { createdAt: 'DESC' },
         take: 1,
       });
       console.log('로그인 한 유저의 포인트 잔고', lastPoint[0].balance);
 
+      // 포인트 상태 변경
       await queryRunner.manager.save(Point, {
         UserId: id,
         reservation: createdReservation.reservationId,
@@ -142,6 +143,8 @@ export class ReservationService {
         expense: totalPoint,
         balance: lastPoint[0].balance - totalPoint,
       });
+
+      // // 동시성 처리를 위해서 예매가 된 좌석인지 체크
       await queryRunner.commitTransaction();
       return { status: 201, message: 'Reservation successful' };
     } catch (error) {
@@ -161,7 +164,87 @@ export class ReservationService {
     return `This action returns a #${id} reservation`;
   }
   // 예매 취소
-  remove(id: number) {
-    return `This action removes a #${id} reservation`;
+  async remove(value: number, user: any) {
+    const jwtUserId = user.userId;
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction('READ COMMITTED'); // 격리 수준
+
+    console.log('유저 ID ===>', jwtUserId);
+    console.log('예매 ID ===>', value);
+    try {
+      // 3시간 전 인지 확인 logic
+      const getStartTime = await queryRunner.manager.findOne(Reservation, {
+        where: { reservationId: value },
+        relations: ['schedule'],
+      });
+      const startTime = getStartTime.schedule.startTime;
+      const timeCheck = await queryRunner.query(
+        `
+        SELECT *
+        FROM schedule
+        WHERE TIMEDIFF(?, ?) < ?;
+        `,
+        [new Date(), startTime, '03:00:00'],
+      );
+      if (timeCheck.length === 0) {
+        console.log('유효기간 지남');
+        throw new Error();
+      }
+
+      //---------------------<Seat logic>------------------------
+      // 취소하고자 하는 좌석 컬럼 삭제
+      await queryRunner.manager.delete(Seat, { reservation: value });
+
+      //-------------------<Reservation logic>-------------------
+      await queryRunner.manager.update(
+        Reservation,
+        { reservationId: value },
+        { status: false },
+      );
+      //---------------------<Point logic>-----------------------
+      // 현재 잔고를 가져옴
+      const currentUserPointTable = await queryRunner.manager.find(Point, {
+        where: { UserId: jwtUserId },
+        order: { createdAt: 'DESC' },
+        take: 1,
+      });
+      const currentUserBalance = currentUserPointTable[0].balance;
+      console.log('현재 잔고', currentUserBalance);
+
+      // 취소할 거래 내역을 가져옴
+      const refundedPoint = await queryRunner.manager.findOne(Point, {
+        where: { reservation: { reservationId: value } },
+      });
+      const refundedPointValue = refundedPoint.expense;
+      console.log('환불할 가격', refundedPointValue);
+
+      // 환불 컬럼을 생성
+      // reservation 테이블의 status(예매상태)를 가져옴
+      const reservationStatus = await queryRunner.manager.findOne(Reservation, {
+        where: { reservationId: value },
+        select: ['status'],
+      });
+      // 예매 상태가 false(예매취소)일 때
+      if (reservationStatus.status) {
+        throw new Error();
+      }
+      // 포인트 환불 컬럼 로직 실행
+      await queryRunner.manager.save(Point, {
+        UserId: jwtUserId,
+        reservation: { reservationId: value },
+        income: refundedPoint.expense,
+        expense: 0,
+        balance: currentUserBalance + refundedPointValue,
+      });
+      await queryRunner.commitTransaction();
+      return { status: 201, message: 'Reservation refund success' };
+    } catch (error) {
+      console.log(error);
+      await queryRunner.rollbackTransaction();
+      return { status: 500, message: 'Reservation refund failed' };
+    } finally {
+      await queryRunner.release();
+    }
   }
 }

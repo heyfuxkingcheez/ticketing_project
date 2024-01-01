@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { Grade } from 'src/user/types/grade.type';
 
 export class CreateSeatDto {}
 
@@ -11,5 +12,7 @@ export class SeatDto {
 }
 
 export class SetSeatDto {
-  seats: SeatDto[];
+  @IsNotEmpty({ message: '좌석 정보를 입력해주세요.' })
+  @IsArray()
+  seats: { grade: Grade; seatNum: number }[];
 }

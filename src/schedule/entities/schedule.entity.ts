@@ -27,11 +27,11 @@ export class Schedule {
   @JoinColumn({ name: 'PerformanceId', referencedColumnName: 'performanceId' })
   performance: Performance;
 
-  @Column({ type: 'time', name: 'start_time', nullable: false })
-  startTime: Date;
+  @Column({ type: 'timestamp', name: 'start_time', nullable: false })
+  startTime: Timestamp;
 
-  @Column({ type: 'time', name: 'end_time', nullable: false })
-  endTime: Date;
+  @Column({ type: 'timestamp', name: 'end_time', nullable: false })
+  endTime: Timestamp;
 
   @Column({ type: 'int', name: 'standardLimit', nullable: false })
   standardLimit: number;

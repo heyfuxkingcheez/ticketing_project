@@ -48,7 +48,4 @@ export class Reservation {
 
   @CreateDateColumn()
   createdAt: Date;
-
-  @DeleteDateColumn()
-  deletedAt: Date;
 }

@@ -23,10 +23,10 @@ export class ScheduleController {
   @Roles(Role.Admin)
   @Post(':performanceId')
   create(
-    @Param() performanceId: string,
+    @Param('performanceId') performanceId: string,
     @Body() createScheduleDto: CreateScheduleDto,
   ) {
-    return this.scheduleService.create(createScheduleDto, performanceId);
+    return this.scheduleService.create(createScheduleDto, +performanceId);
   }
 
   @Get()

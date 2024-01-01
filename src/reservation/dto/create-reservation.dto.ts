@@ -12,4 +12,7 @@ export class SeatDto {
 
 export class SetSeatDto {
   seats: SeatDto[];
+
+  @IsNotEmpty({ message: '공연을 선택 해주세요.' })
+  scheduleId: number;
 }

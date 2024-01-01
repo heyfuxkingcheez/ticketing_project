@@ -20,21 +20,28 @@ export class ScheduleService {
   ) {}
 
   // 공연 시간표 등록
-  async create(createScheduleDto: CreateScheduleDto, performanceId: any) {
-    const { startTime, endTime } = createScheduleDto;
-    const id = performanceId.performanceId;
+  async create(createScheduleDto: CreateScheduleDto, performanceId: number) {
+    const { startTime, endTime, standardLimit, royalLimit, vipLimit } =
+      createScheduleDto;
+    const date = await this.performancRepository.findOne({
+      where: { performanceId },
+      select: ['startDate', 'endDate'],
+    });
 
     try {
       const check = await this.performancRepository.findOne({
-        where: { performanceId: +id },
+        where: { performanceId },
       });
 
       if (!check) new NotFoundException('데이터 조회 실패');
 
       const postTIme = await this.scheduleRepository.save({
-        performance: id,
-        startTime,
-        endTime,
+        performance: { performanceId },
+        startTime: `${date.startDate} ${startTime}`,
+        endTime: `${date.endDate} ${endTime}`,
+        standardLimit,
+        royalLimit,
+        vipLimit,
       });
 
       return { postTIme };
