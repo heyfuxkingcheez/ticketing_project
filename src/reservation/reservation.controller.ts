@@ -15,13 +15,25 @@ import { AuthGuard } from '@nestjs/passport';
 import { string } from 'joi';
 import { UserInfo } from 'src/utils/userInfo.decorator';
 import { User } from 'src/user/entities/user.entity';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('RESERVATIONS')
 @UseGuards(AuthGuard('jwt'))
 @Controller('reservation')
 export class ReservationController {
   constructor(private readonly reservationService: ReservationService) {}
 
   // 공연 예매
+  @ApiOperation({ summary: '공연 예매' })
+  @ApiQuery({
+    name: 'value',
+    description: '공연 ID',
+    required: true,
+  })
+  @ApiResponse({
+    status: 200,
+    description: '예매 성공',
+  })
   @Post()
   create(
     // @Body() createReservationDto: CreateReservationDto,
@@ -40,18 +52,27 @@ export class ReservationController {
   }
 
   // 예매 목록 조회
+  @ApiOperation({ summary: '예매 목록 조회' })
+  @ApiResponse({
+    status: 200,
+    description: '예메 목록 조회 성공',
+  })
   @Get()
-  findAll() {
-    return this.reservationService.findAll();
-  }
-
-  // 예매 상세 조회
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.reservationService.findOne(+id);
+  findAll(@UserInfo() user: User) {
+    return this.reservationService.findAll(user);
   }
 
   // 예매 취소
+  @ApiOperation({ summary: '예매 취소' })
+  @ApiResponse({
+    status: 200,
+    description: '예매 취소 성공',
+  })
+  @ApiQuery({
+    name: 'value',
+    description: '공연 ID',
+    required: true,
+  })
   @Delete()
   remove(@UserInfo() user: User, @Query('value') value: string) {
     return this.reservationService.remove(+value, user);

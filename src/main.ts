@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import cookieParser from 'cookie-parser';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 declare const module: any;
 
@@ -14,6 +15,15 @@ async function bootstrap() {
     }),
   );
   app.use(cookieParser());
+
+  const config = new DocumentBuilder()
+    .setTitle('Ticket Reservation Service')
+    .setDescription('Ticket Reservation Api')
+    .setVersion('1.0')
+    .addTag('Tickets')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
 
   await app.listen(3000);
 

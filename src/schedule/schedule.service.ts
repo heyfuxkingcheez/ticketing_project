@@ -88,8 +88,8 @@ export class ScheduleService {
     }
   }
 
-  async remove(id: any) {
-    await this.scheduleRepository.delete(id);
+  async remove(performanceId: any) {
+    await this.scheduleRepository.delete(performanceId);
     return { message: '삭제 완료' };
   }
 }

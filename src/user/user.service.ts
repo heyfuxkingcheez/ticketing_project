@@ -12,6 +12,7 @@ import { compare, hash } from 'bcrypt';
 import _ from 'lodash';
 import { Point } from 'src/point/entities/point.entity';
 import { string } from 'joi';
+import { Sex } from './types/sex.type';
 
 @Injectable()
 export class UserService {
@@ -28,7 +29,7 @@ export class UserService {
     email: string,
     password: string,
     name: string,
-    sex: boolean,
+    sex: Sex,
     phone: string,
   ) {
     const existingUser = await this.findByEmail(email);
@@ -73,18 +74,11 @@ export class UserService {
 
   // 네이버 로그인
   async OAuthLogin({ req, res }) {
-    console.log('네이버 유저 서비스 진입 성공!', req);
+    console.log('네이버 유저 서비스 진입 성공!', req.user);
     // 1. 회원조회
     let user = await this.userRepository.findOne({
       where: { email: req.user.email },
     });
-
-    let sex: boolean = true;
-    if (req.user.gender === 'M') {
-      sex = true;
-    } else {
-      sex = false;
-    }
 
     // 2. 회원가입이 안되어 있다면, 자동회원 가입
     const hashedPassword = await hash(req.user.id, 12);
@@ -94,7 +88,7 @@ export class UserService {
         password: hashedPassword,
         name: req.user.name,
         phone: req.user.phone,
-        sex: sex,
+        sex: req.user.gender,
       });
       await this.pointRepository.save({
         UserId: newUser.userId,

@@ -22,12 +22,20 @@ import { RolesGuard } from 'src/auth/roles.guard';
 import { UpdateScheduleDto } from 'src/schedule/dto/update-schedule.dto';
 import { UserInfo } from 'src/utils/userInfo.decorator';
 import { User } from 'src/user/entities/user.entity';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('PERFORMANCES')
 @Controller('performance')
 export class PerformanceController {
   constructor(private readonly performanceService: PerformanceService) {}
 
   // 공연 등록
+  @ApiOperation({ summary: '공연 등록' })
+  @ApiResponse({
+    status: 200,
+    description: '공연 등록 성공',
+    type: CreateScheduleDto,
+  })
   @UseGuards(RolesGuard)
   @Roles(Role.Admin)
   @Post()
@@ -47,18 +55,48 @@ export class PerformanceController {
   }
 
   // 공연 검색
+  @ApiOperation({ summary: '공연 검색' })
+  @ApiResponse({
+    status: 200,
+    description: '공연 검색 성공',
+  })
+  @ApiQuery({
+    name: 'search',
+    description: '검색어',
+    required: true,
+  })
   @Get('search')
   searchPerformances(@Query('keyword') keyword: string) {
     return this.performanceService.search(keyword);
   }
 
   // 공연 전체 조회
+  @ApiOperation({ summary: '공연 전체 조회' })
+  @ApiResponse({
+    status: 200,
+    description: '공연 목록 조회 성공',
+  })
   @Get()
   findAll() {
     return this.performanceService.findAll();
   }
 
   // 해당 공연 좌석 조회
+  @ApiOperation({ summary: '해당 공연 좌석 조회' })
+  @ApiResponse({
+    status: 200,
+    description: '해당 공연 좌석 조회 성공',
+  })
+  @ApiQuery({
+    name: 'performanceId',
+    description: '공연 ID',
+    required: true,
+  })
+  @ApiQuery({
+    name: 'scheduleId',
+    description: '스케줄 ID',
+    required: true,
+  })
   @UseGuards(AuthGuard('jwt'))
   @Get(':performanceId/seats/:scheduleId')
   findOneSeats(
@@ -75,12 +113,33 @@ export class PerformanceController {
   }
 
   // 공연 상세 조회
+  @ApiOperation({ summary: '공연 상세 조회' })
+  @ApiResponse({
+    status: 200,
+    description: '공연 상세 조회 성공',
+  })
+  @ApiQuery({
+    name: 'performanceId',
+    description: '공연 ID',
+    required: true,
+  })
   @Get(':performanceId')
   findOne(@Param('performanceId') performanceId: string) {
     return this.performanceService.findOne(+performanceId);
   }
 
   // 공연 수정
+  @ApiOperation({ summary: '공연 수정' })
+  @ApiResponse({
+    status: 200,
+    description: '공연 수정 성공',
+    type: UpdatePerformanceDto,
+  })
+  @ApiQuery({
+    name: 'performanceId',
+    description: '공연 ID',
+    required: true,
+  })
   @UseGuards(RolesGuard)
   @Roles(Role.Admin)
   @Patch(':performanceId')
@@ -92,6 +151,16 @@ export class PerformanceController {
   }
 
   // 공연 삭제
+  @ApiOperation({ summary: '공연 삭제' })
+  @ApiResponse({
+    status: 200,
+    description: '공연 삭제 성공',
+  })
+  @ApiQuery({
+    name: 'performanceId',
+    description: '공연 ID',
+    required: true,
+  })
   @UseGuards(RolesGuard)
   @Roles(Role.Admin)
   @Delete(':performanceId')

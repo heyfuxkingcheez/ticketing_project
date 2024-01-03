@@ -14,12 +14,24 @@ import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { Roles } from 'src/auth/roles.decorator';
 import { Role } from 'src/user/types/userRole.type';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('SCHEDULES')
 @Controller('schedule')
 export class ScheduleController {
   constructor(private readonly scheduleService: ScheduleService) {}
 
   // 스케줄 등록
+  @ApiOperation({ summary: '스케줄 등록' })
+  @ApiQuery({
+    name: 'performanceId',
+    required: true,
+    description: '공연 ID',
+  })
+  @ApiResponse({
+    status: 200,
+    description: '스케줄 등록 성공',
+  })
   @UseGuards(RolesGuard)
   @Roles(Role.Admin)
   @Post(':performanceId')
@@ -36,17 +48,46 @@ export class ScheduleController {
   }
 
   // 스케줄 목록 조회
+  @ApiOperation({ summary: '스케줄 목록 조회' })
+  @ApiResponse({
+    status: 200,
+    description: '스케줄 목록 조회 성공',
+    type: CreateScheduleDto,
+  })
   @Get()
   findAll() {
     return this.scheduleService.findAll();
   }
+
   // 스케줄 상세 조회
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.scheduleService.findOne(+id);
+  @ApiOperation({ summary: '스케줄 상세 조회' })
+  @ApiResponse({
+    status: 200,
+    description: '스케줄 상세 조회 성공',
+    type: CreateScheduleDto,
+  })
+  @ApiQuery({
+    name: 'performanceId',
+    description: '공연 ID',
+    required: true,
+  })
+  @Get(':performanceId')
+  findOne(@Param('performanceId') performanceId: string) {
+    return this.scheduleService.findOne(+performanceId);
   }
 
   // 스케줄 수정
+  @ApiOperation({ summary: '스케줄 수정' })
+  @ApiResponse({
+    status: 200,
+    description: '스케줄 수정 성공',
+    type: CreateScheduleDto,
+  })
+  @ApiQuery({
+    name: 'scheduleId',
+    required: true,
+    description: '스케줄 ID',
+  })
   @UseGuards(RolesGuard)
   @Roles(Role.Admin)
   @Patch('update/:scheduleId')
@@ -59,10 +100,20 @@ export class ScheduleController {
   }
 
   // 스케줄 삭제
+  @ApiOperation({ summary: '스케줄 삭제' })
+  @ApiResponse({
+    status: 200,
+    description: '스케줄 삭제 성공',
+  })
+  @ApiQuery({
+    name: 'performanceId',
+    description: '공연 ID',
+    required: true,
+  })
   @UseGuards(RolesGuard)
   @Roles(Role.Admin)
-  @Delete('delete/:id')
-  remove(@Param('id') id: string) {
-    return this.scheduleService.remove(+id);
+  @Delete('delete/:performanceId')
+  remove(@Param('performanceId') performanceId: string) {
+    return this.scheduleService.remove(+performanceId);
   }
 }

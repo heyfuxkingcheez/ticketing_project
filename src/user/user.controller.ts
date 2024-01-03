@@ -15,11 +15,25 @@ import { UserInfo } from 'src/utils/userInfo.decorator';
 import { User } from './entities/user.entity';
 import { LoginDto } from './dto/login.dto';
 import { Request, Response } from 'express';
+import {
+  ApiAcceptedResponse,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
+@ApiTags('USER')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @ApiOperation({ summary: '회원가입' })
+  @ApiResponse({
+    status: 200,
+    description: '회원가입 성공',
+    type: RegisterDto,
+  })
   @Post('register')
   async register(@Body() registerDto: RegisterDto) {
     return await this.userService.register(
@@ -31,6 +45,12 @@ export class UserController {
     );
   }
 
+  @ApiOperation({ summary: '로그인' })
+  @ApiResponse({
+    status: 201,
+    description: '로그인 성공',
+    type: LoginDto,
+  })
   @Post('login')
   async login(
     @Body() loginDto: LoginDto,
@@ -39,32 +59,36 @@ export class UserController {
     return await this.userService.login(loginDto.email, loginDto.password, res);
   }
 
-  @UseGuards(AuthGuard('jwt'))
-  @Get('email')
-  getEmail(@UserInfo() user: User) {
-    return { email: user.email };
-  }
-
-  @Get('check')
-  checkUser(@Req() req: any) {
-    const userPayload = req.user;
-    return this.userService.checkUser(userPayload);
-  }
-
   // 물어봐야지 check 보다 위에있으면 왜 일로 넘어가는지...
+  @ApiOperation({ summary: '유저 정보 조회' })
+  @ApiResponse({
+    status: 200,
+    description: '조회 성공',
+  })
   @UseGuards(AuthGuard('jwt'))
+  @ApiQuery({
+    name: 'userId',
+    required: true,
+    description: '사용자 ID',
+  })
   @Get(':userId')
   findOne(@Param('userId') userId: string) {
     const user = this.userService.getUser(userId);
     return user;
   }
 
+  @ApiOperation({ summary: '네이버 로그인' })
   @UseGuards(AuthGuard('naver'))
   @Get('login/naver')
   async loginNaver() {
     return;
   }
 
+  @ApiOperation({ summary: '네이버 로그인 콜백' })
+  @ApiResponse({
+    status: 201,
+    description: '네이버 로그인 성공',
+  })
   @UseGuards(AuthGuard('naver'))
   @Get('naver/callback')
   async callback(

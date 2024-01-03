@@ -175,13 +175,15 @@ export class ReservationService {
     }
   }
   // 예매 목록 조회
-  findAll() {
-    return `This action returns all reservation`;
+  async findAll(user: any) {
+    const reservationByUser = await this.reservationRepository.find({
+      where: { user: user.userId },
+      order: { createdAt: 'DESC' },
+      relations: ['performance'],
+    });
+    return { reservationByUser };
   }
-  // 예매 상세 조회
-  findOne(id: number) {
-    return `This action returns a #${id} reservation`;
-  }
+
   // 예매 취소
   async remove(value: number, user: any) {
     const jwtUserId = user.userId;

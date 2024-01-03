@@ -11,6 +11,7 @@ import {
 import { Role } from '../types/userRole.type';
 import { Point } from 'src/point/entities/point.entity';
 import { Seat } from 'src/seat/entities/seat.entity';
+import { Sex } from '../types/sex.type';
 
 @Index('email', ['email'], { unique: true })
 @Entity({
@@ -38,8 +39,8 @@ export class User {
   @Column({ type: 'varchar', nullable: false })
   phone: string;
 
-  @Column({ type: 'boolean', nullable: false })
-  sex: boolean;
+  @Column({ type: 'enum', enum: Sex, default: Sex.MALE })
+  sex: Sex;
 
   @Column({ type: 'enum', enum: Role, default: Role.User })
   role: Role;

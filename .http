@@ -164,3 +164,8 @@ DELETE {{domain}}/reservation?value=129
 Content-Type: application/json
 Authorization: Bearer {{AccessToken}}
 
+#예매 조회
+###
+GET {{domain}}/reservation
+Authorization: Bearer {{AccessToken}}
+
