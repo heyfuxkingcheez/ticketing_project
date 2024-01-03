@@ -1,4 +1,4 @@
-## api 명세서
+## swagger
 ```
 http://localhost:3000/api
 ```
