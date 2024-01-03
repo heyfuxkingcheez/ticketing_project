@@ -45,7 +45,7 @@ GET {{domain}}/performance/2
 
 #해당 공연 좌석 조회
 ###
-GET {{domain}}/performance/2/seats/12/2024-01-07?time=10:00:00
+GET {{domain}}/performance/2/seats/12
 Authorization: Bearer {{AccessToken}}
 
 #공연 검색
@@ -152,15 +152,15 @@ Authorization: Bearer {{AccessToken}}
 
 {
   "seats":[
-{"grade": "VIP","seatNum": 5},
-{"grade": "ROYAL","seatNum": 6}
+{"grade": "STANDARD","seatNum": 10},
+{"grade": "STANDARD","seatNum": 11}
 ],
 "scheduleId": 12
 }
 
 #공연 예매 취소
 ###
-DELETE {{domain}}/reservation?value=122
+DELETE {{domain}}/reservation?value=129
 Content-Type: application/json
 Authorization: Bearer {{AccessToken}}
 

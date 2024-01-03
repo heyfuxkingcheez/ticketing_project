@@ -58,30 +58,26 @@ export class PerformanceController {
     return this.performanceService.findAll();
   }
 
-  // 공연 상세 조회
-  @Get(':performanceId')
-  findOne(@Param('performanceId') performanceId: string) {
-    return this.performanceService.findOne(+performanceId);
-  }
-
   // 해당 공연 좌석 조회
   @UseGuards(AuthGuard('jwt'))
-  @Get(':performanceId/seats/:scheduleId/:date')
+  @Get(':performanceId/seats/:scheduleId')
   findOneSeats(
     @UserInfo() user: User,
     @Param('performanceId')
     performanceId: string,
     @Param('scheduleId') scheduleId: string,
-    @Param('date') date: string,
-    @Query('time') time: string,
   ) {
     return this.performanceService.findOneSeats(
       +performanceId,
       user,
-      date,
-      time,
       +scheduleId,
     );
+  }
+
+  // 공연 상세 조회
+  @Get(':performanceId')
+  findOne(@Param('performanceId') performanceId: string) {
+    return this.performanceService.findOne(+performanceId);
   }
 
   // 공연 수정

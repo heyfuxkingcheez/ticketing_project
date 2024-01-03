@@ -56,6 +56,22 @@ export class ReservationService {
       });
       console.log('스케줄아이디, 등급별 리밋 수 ==>', schedule);
 
+      for (const data of seat) {
+        if (
+          data.grade === 'STANDARD' &&
+          data.seatNum > schedule.standardLimit
+        ) {
+          throw new Error('좌석 번호를 다시 확인해주세요.');
+        } else if (
+          data.grade === 'ROYAL' &&
+          data.seatNum > schedule.royalLimit
+        ) {
+          throw new Error('좌석 번호를 다시 확인해주세요.');
+        } else if (data.grade === 'VIP' && data.seatNum > schedule.vipLimit) {
+          throw new Error('좌석 번호를 다시 확인해주세요.');
+        }
+      }
+
       // 1. 예매 테이블 생성
       const createdReservation: any = await queryRunner.manager.save(
         Reservation,
@@ -136,6 +152,9 @@ export class ReservationService {
       console.log('로그인 한 유저의 포인트 잔고', lastPoint[0].balance);
 
       // 포인트 상태 변경
+      if (lastPoint[0].balance < totalPoint) {
+        throw new Error('잔액 부족');
+      }
       await queryRunner.manager.save(Point, {
         UserId: id,
         reservation: createdReservation.reservationId,

@@ -80,15 +80,7 @@ export class PerformanceService {
   }
 
   // 해당 공연 특정 시간대 좌석 조회
-  async findOneSeats(
-    performanceId: number,
-    user: any,
-    date: any,
-    time: any,
-    scheduleId: any,
-  ) {
-    console.log('time: ', time);
-    console.log('date: ', date);
+  async findOneSeats(performanceId: number, user: any, scheduleId: any) {
     console.log('user: ', user);
     console.log('scheduleId: ', scheduleId);
 
@@ -110,11 +102,14 @@ export class PerformanceService {
     });
     console.log('existSeats: ', existSeats);
 
-    //----------------------------------------------------------------------
-    let bookedStandardSeatArr = [];
-    let bookedRoyalSeatArr = [];
-    let bookedVipSeatArr = [];
+    //-----------------------------------------------------------------------
 
+    // 예매된 좌석 배열 초기화
+    let bookedStandardSeatArr: Array<number> = [];
+    let bookedRoyalSeatArr: Array<number> = [];
+    let bookedVipSeatArr: Array<number> = [];
+
+    // 좌석db에 존재하는 seatNum을 각 grade에 맞게 새로운 배열로 반환
     for (const existseat of existSeats) {
       if (existseat.grade === 'STANDARD') {
         bookedStandardSeatArr.push(existseat.seatNum);
@@ -128,10 +123,12 @@ export class PerformanceService {
     console.log('로얄 예매된 좌석 Arr', bookedRoyalSeatArr);
     console.log('뷔아피 예매된 좌석 Arr', bookedVipSeatArr);
 
-    let possibleStandard = [];
-    let possibleRoyal = [];
-    let possibleVip = [];
+    // 예매 가능한 좌석 배열 초기화
+    let possibleStandard: Array<any> = [];
+    let possibleRoyal: Array<any> = [];
+    let possibleVip: Array<any> = [];
 
+    // 예매 가능 좌석 생성 class
     class SeatObject {
       grade: string;
       seatNum: number;
@@ -143,6 +140,7 @@ export class PerformanceService {
         this.price = price;
       }
     }
+    // STANDARD 예매 가능 좌석 생성
     for (let i = 1; i <= limits.standardLimit; i++) {
       const standard = new SeatObject('STANDARD', i, performance.price);
       possibleStandard.push(standard);
@@ -150,6 +148,7 @@ export class PerformanceService {
     const filteredStandardSeats = possibleStandard.filter(
       (seat) => !bookedStandardSeatArr.includes(seat.seatNum),
     );
+    // ROYAL 예매 가능 좌석 생성
     for (let i = 1; i <= limits.royalLimit; i++) {
       const royal = new SeatObject('ROYAL', i, performance.price * 1.5);
       possibleRoyal.push(royal);
@@ -157,6 +156,7 @@ export class PerformanceService {
     const filteredRoyalSeats = possibleRoyal.filter(
       (seat) => !bookedRoyalSeatArr.includes(seat.seatNum),
     );
+    // VIP 예매 가능 좌석 생성
     for (let i = 1; i <= limits.vipLimit; i++) {
       const vip = new SeatObject('VIP', i, performance.price * 1.75);
       possibleVip.push(vip);
