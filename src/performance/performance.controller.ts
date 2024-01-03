@@ -20,6 +20,8 @@ import { Role } from 'src/user/types/userRole.type';
 import { UpdatePerformanceDto } from './dto/update-performance.dto';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { UpdateScheduleDto } from 'src/schedule/dto/update-schedule.dto';
+import { UserInfo } from 'src/utils/userInfo.decorator';
+import { User } from 'src/user/entities/user.entity';
 
 @Controller('performance')
 export class PerformanceController {
@@ -34,10 +36,13 @@ export class PerformanceController {
     createPerformanceDto: CreatePerformanceDto,
     @Body()
     createScheduleDto: CreateScheduleDto,
+    @Body()
+    playDate: Date,
   ) {
     return await this.performanceService.create(
       createPerformanceDto,
       createScheduleDto,
+      playDate,
     );
   }
 
@@ -57,6 +62,26 @@ export class PerformanceController {
   @Get(':performanceId')
   findOne(@Param('performanceId') performanceId: string) {
     return this.performanceService.findOne(+performanceId);
+  }
+
+  // 해당 공연 좌석 조회
+  @UseGuards(AuthGuard('jwt'))
+  @Get(':performanceId/seats/:scheduleId/:date')
+  findOneSeats(
+    @UserInfo() user: User,
+    @Param('performanceId')
+    performanceId: string,
+    @Param('scheduleId') scheduleId: string,
+    @Param('date') date: string,
+    @Query('time') time: string,
+  ) {
+    return this.performanceService.findOneSeats(
+      +performanceId,
+      user,
+      date,
+      time,
+      +scheduleId,
+    );
   }
 
   // 공연 수정

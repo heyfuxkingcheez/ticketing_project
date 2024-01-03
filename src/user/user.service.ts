@@ -78,25 +78,39 @@ export class UserService {
     let user = await this.userRepository.findOne({
       where: { email: req.user.email },
     });
+
+    let sex: boolean = true;
+    if (req.user.gender === 'M') {
+      sex = true;
+    } else {
+      sex = false;
+    }
+
     // 2. 회원가입이 안되어 있다면, 자동회원 가입
     const hashedPassword = await hash(req.user.id, 12);
     if (!user) {
-      await this.userRepository.save({
+      const newUser = await this.userRepository.save({
         email: req.user.email,
         password: hashedPassword,
         name: req.user.name,
         phone: req.user.phone,
-        sex: req.user.gender,
+        sex: sex,
+      });
+      await this.pointRepository.save({
+        UserId: newUser.userId,
+        income: 1000000,
+        expense: 0,
+        balance: 1000000,
       });
       const { email } = req.user;
-      const payload = { email };
+      const payload = { email, sub: req.user.id };
       const accessToken = await this.jwtService.signAsync(payload);
 
       return { message: '네이버 로그인 성공!', accessToken };
     }
     // 3. 회원가입이 되어 있다면, 로그인
     const { email } = req.user;
-    const payload = { email };
+    const payload = { email, sub: req.user.id };
     const accessToken = await this.jwtService.signAsync(payload);
 
     return { message: '네이버 로그인 성공!', accessToken };

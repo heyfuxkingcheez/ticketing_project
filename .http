@@ -41,13 +41,18 @@ GET {{domain}}/performance
 
 #공연 상세 조회
 ###
-GET {{domain}}/performance/40
+GET {{domain}}/performance/2
+
+#해당 공연 좌석 조회
+###
+GET {{domain}}/performance/2/seats/12/2024-01-07?time=10:00:00
+Authorization: Bearer {{AccessToken}}
 
 #공연 검색
 ###
-GET {{domain}}/performance/search?keyword=렌트
+GET {{domain}}/performance/search?keyword=쏘우
 
-#공연 등록
+#공연 등록 / 공연, 스케줄 테이블 생성!!
 ###
 POST {{domain}}/performance
 Content-Type: application/json
@@ -57,14 +62,18 @@ Authorization: Bearer {{AccessToken}}
 	"performanceTitle": "뮤지컬 <렌트>",
   "category": 0,
 	"age": 14,
-	"price": 70000,
+	"price": 25000,
 	"imageUrl": "https://ticketimage.interpark.com/Play/image/large/23/23013171_p.gif",
   "hours": 120,
-  "place": "정기욱",
-	"startDate": "2023-11-11",
-	"endDate": "2024-02-25",
+  "place": "대전",
+	"startDate": "2024-02-01",
+	"endDate": "2024-02-14",
+  "playDate": "2024-02-01",
   "startTime": "15:00:00",
-  "endTime": "17:00:00"
+  "endTime": "17:00:00",
+  "standardLimit": 5,
+  "royalLimit": 5,
+  "vipLimit": 5
 }
 
 #공연 수정
@@ -99,11 +108,12 @@ Content-Type: application/json
 Authorization: Bearer {{AccessToken}}
 
 {
-  "startTime": "18:00:00",
-  "endTime": "20:00:00",
-  "standardLimit": 100,
-  "royalLimit": 100,
-  "vipLimit": 100
+  "playDate": "2024-01-07", 
+  "startTime": "17:00:00",
+  "endTime": "19:00:00",
+  "standardLimit": 5,
+  "royalLimit": 5,
+  "vipLimit": 5
 }
 
 #공연 시간표 전체 조회
@@ -112,7 +122,7 @@ GET {{domain}}/schedule
 
 #공연 시간표 상세 조회
 ###
-GET {{domain}}/schedule/1
+GET {{domain}}/schedule/2
 
 #공연 시간표 수정
 ###
@@ -142,15 +152,15 @@ Authorization: Bearer {{AccessToken}}
 
 {
   "seats":[
-{"grade": "VIP","seatNum": 3},
-{"grade": "ROYAL","seatNum": 4}
+{"grade": "VIP","seatNum": 5},
+{"grade": "ROYAL","seatNum": 6}
 ],
-"scheduleId": 3
+"scheduleId": 12
 }
 
 #공연 예매 취소
 ###
-DELETE {{domain}}/reservation?value=121
+DELETE {{domain}}/reservation?value=122
 Content-Type: application/json
 Authorization: Bearer {{AccessToken}}
 

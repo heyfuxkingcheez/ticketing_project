@@ -144,7 +144,7 @@ export class ReservationService {
         balance: lastPoint[0].balance - totalPoint,
       });
 
-      // // 동시성 처리를 위해서 예매가 된 좌석인지 체크
+      // 동시성 처리를 위해서 예매가 된 좌석인지 체크
       await queryRunner.commitTransaction();
       return { status: 201, message: 'Reservation successful' };
     } catch (error) {
@@ -168,7 +168,7 @@ export class ReservationService {
     const jwtUserId = user.userId;
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
-    await queryRunner.startTransaction('READ COMMITTED'); // 격리 수준
+    await queryRunner.startTransaction(); // 격리 수준
 
     console.log('유저 ID ===>', jwtUserId);
     console.log('예매 ID ===>', value);
@@ -185,6 +185,7 @@ export class ReservationService {
         FROM schedule
         WHERE TIMEDIFF(?, ?) < ?;
         `,
+        // SQL injection 방지를 위해서 배열로 따로 빼둠
         [new Date(), startTime, '03:00:00'],
       );
       if (timeCheck.length === 0) {

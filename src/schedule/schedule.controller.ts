@@ -19,26 +19,34 @@ import { Role } from 'src/user/types/userRole.type';
 export class ScheduleController {
   constructor(private readonly scheduleService: ScheduleService) {}
 
+  // 스케줄 등록
   @UseGuards(RolesGuard)
   @Roles(Role.Admin)
   @Post(':performanceId')
   create(
     @Param('performanceId') performanceId: string,
     @Body() createScheduleDto: CreateScheduleDto,
+    @Body() playDate: Date,
   ) {
-    return this.scheduleService.create(createScheduleDto, +performanceId);
+    return this.scheduleService.create(
+      createScheduleDto,
+      +performanceId,
+      playDate,
+    );
   }
 
+  // 스케줄 목록 조회
   @Get()
   findAll() {
     return this.scheduleService.findAll();
   }
-
+  // 스케줄 상세 조회
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.scheduleService.findOne(+id);
   }
 
+  // 스케줄 수정
   @UseGuards(RolesGuard)
   @Roles(Role.Admin)
   @Patch('update/:scheduleId')
@@ -50,6 +58,7 @@ export class ScheduleController {
     return this.scheduleService.update(createScheduleDto, scheduleId);
   }
 
+  // 스케줄 삭제
   @UseGuards(RolesGuard)
   @Roles(Role.Admin)
   @Delete('delete/:id')

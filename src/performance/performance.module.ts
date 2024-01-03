@@ -7,6 +7,7 @@ import { ConfigService } from '@nestjs/config';
 import { Performance } from './entities/performance.entity';
 import { User } from 'src/user/entities/user.entity';
 import { Schedule } from 'src/schedule/entities/schedule.entity';
+import { Seat } from 'src/seat/entities/seat.entity';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { Schedule } from 'src/schedule/entities/schedule.entity';
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([Performance, Schedule]),
+    TypeOrmModule.forFeature([Performance, Schedule, Seat]),
   ],
   providers: [PerformanceService],
   controllers: [PerformanceController],

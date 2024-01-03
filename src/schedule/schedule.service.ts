@@ -20,15 +20,26 @@ export class ScheduleService {
   ) {}
 
   // 공연 시간표 등록
-  async create(createScheduleDto: CreateScheduleDto, performanceId: number) {
+  async create(
+    createScheduleDto: CreateScheduleDto,
+    performanceId: number,
+    playDate: any,
+  ) {
+    console.log('공연 시간표 등록 날짜', playDate.playDate);
     const { startTime, endTime, standardLimit, royalLimit, vipLimit } =
       createScheduleDto;
-    const date = await this.performancRepository.findOne({
-      where: { performanceId },
-      select: ['startDate', 'endDate'],
-    });
-
+    const findStartTime: any = `${playDate.playDate} ${startTime}`;
+    const findEndTime: any = `${playDate.playDate} ${endTime}`;
     try {
+      // 이미 등록되어 있는지 확인
+      const existTime = await this.scheduleRepository.findOne({
+        where: {
+          startTime: findStartTime,
+          endTime: findEndTime,
+        },
+      });
+      if (existTime) throw new Error('이미 존재 합니다.');
+
       const check = await this.performancRepository.findOne({
         where: { performanceId },
       });
@@ -37,8 +48,8 @@ export class ScheduleService {
 
       const postTIme = await this.scheduleRepository.save({
         performance: { performanceId },
-        startTime: `${date.startDate} ${startTime}`,
-        endTime: `${date.endDate} ${endTime}`,
+        startTime: `${playDate.playDate} ${startTime}`,
+        endTime: `${playDate.playDate} ${endTime}`,
         standardLimit,
         royalLimit,
         vipLimit,
@@ -47,6 +58,7 @@ export class ScheduleService {
       return { postTIme };
     } catch (error) {
       console.error(error);
+      return { status: 400, message: '오류 발생' };
     }
   }
 
