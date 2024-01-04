@@ -30,7 +30,6 @@ export class Reservation {
 
   @ManyToOne(() => Performance, (performance) => performance.reservations, {
     nullable: false,
-    onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'PerformanceId' })
   performance: Performance;
