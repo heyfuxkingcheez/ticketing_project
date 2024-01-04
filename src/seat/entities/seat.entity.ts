@@ -24,22 +24,28 @@ export class Seat {
 
   @ManyToOne(() => Performance, (performance) => performance.seat, {
     nullable: false,
+    onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'PerformanceId' })
   performance: Performance;
 
-  @ManyToOne(() => User, (user) => user.seat, { nullable: false })
+  @ManyToOne(() => User, (user) => user.seat, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'UserId' })
   user: User;
 
   @ManyToOne(() => Reservation, (reservation) => reservation.seat, {
     nullable: false,
+    onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'ReservationId' })
   reservation: Reservation;
 
   @ManyToOne(() => Schedule, (schedule) => schedule.seats, {
     nullable: false,
+    onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'ScheduleId', referencedColumnName: 'scheduleId' })
   schedules: Schedule;

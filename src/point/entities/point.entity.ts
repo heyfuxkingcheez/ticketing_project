@@ -20,12 +20,14 @@ export class Point {
   UserId: number;
 
   @ManyToOne(() => User, (user) => user.userId, {
-    // onDelete: 'CASCADE',
+    onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'UserId' })
   user: User;
 
-  @ManyToOne(() => Reservation, (reservation) => reservation.point)
+  @ManyToOne(() => Reservation, (reservation) => reservation.point, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'ReservationId' })
   reservation: Reservation;
 

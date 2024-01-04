@@ -15,10 +15,17 @@ import { AuthGuard } from '@nestjs/passport';
 import { string } from 'joi';
 import { UserInfo } from 'src/utils/userInfo.decorator';
 import { User } from 'src/user/entities/user.entity';
-import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 @ApiTags('RESERVATIONS')
 @UseGuards(AuthGuard('jwt'))
+@ApiBearerAuth()
 @Controller('reservation')
 export class ReservationController {
   constructor(private readonly reservationService: ReservationService) {}
@@ -34,6 +41,14 @@ export class ReservationController {
     status: 200,
     description: '예매 성공',
   })
+  @ApiResponse({
+    status: 400,
+    description: '예매 실패',
+  })
+  @ApiResponse({
+    status: 404,
+    description: '존재하지 않는 공연 입니다.',
+  })
   @Post()
   create(
     // @Body() createReservationDto: CreateReservationDto,
@@ -44,10 +59,6 @@ export class ReservationController {
     const seat = setSeatDto.seats;
     const bodyScheduleId = setSeatDto.scheduleId;
     const id = req.user.userId;
-    console.log('좌석 obj ===>', seat);
-    console.log('유저 id ===>', id);
-    console.log('공연 id ===>', +value);
-    console.log('스케줄 id ===>', bodyScheduleId);
     return this.reservationService.create(seat, id, +value, bodyScheduleId);
   }
 
@@ -56,6 +67,10 @@ export class ReservationController {
   @ApiResponse({
     status: 200,
     description: '예메 목록 조회 성공',
+  })
+  @ApiResponse({
+    status: 404,
+    description: '예메 목록 조회 실패',
   })
   @Get()
   findAll(@UserInfo() user: User) {
@@ -67,6 +82,10 @@ export class ReservationController {
   @ApiResponse({
     status: 200,
     description: '예매 취소 성공',
+  })
+  @ApiResponse({
+    status: 404,
+    description: '예매 취소 실패',
   })
   @ApiQuery({
     name: 'value',

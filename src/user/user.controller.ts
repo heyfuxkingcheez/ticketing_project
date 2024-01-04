@@ -17,6 +17,7 @@ import { LoginDto } from './dto/login.dto';
 import { Request, Response } from 'express';
 import {
   ApiAcceptedResponse,
+  ApiBearerAuth,
   ApiOperation,
   ApiQuery,
   ApiResponse,
@@ -49,7 +50,10 @@ export class UserController {
   @ApiResponse({
     status: 201,
     description: '로그인 성공',
-    type: LoginDto,
+  })
+  @ApiResponse({
+    status: 401,
+    description: '로그인 실패',
   })
   @Post('login')
   async login(
@@ -59,11 +63,20 @@ export class UserController {
     return await this.userService.login(loginDto.email, loginDto.password, res);
   }
 
-  // 물어봐야지 check 보다 위에있으면 왜 일로 넘어가는지...
+  // 유저 정보 조회
   @ApiOperation({ summary: '유저 정보 조회' })
+  @ApiBearerAuth('accessToken')
   @ApiResponse({
     status: 200,
     description: '조회 성공',
+  })
+  @ApiResponse({
+    status: 401,
+    description: '조회 실패',
+  })
+  @ApiResponse({
+    status: 404,
+    description: '조회 할 목록이 없습니다.',
   })
   @UseGuards(AuthGuard('jwt'))
   @ApiQuery({
@@ -88,6 +101,10 @@ export class UserController {
   @ApiResponse({
     status: 201,
     description: '네이버 로그인 성공',
+  })
+  @ApiResponse({
+    status: 401,
+    description: '네이버 로그인 실패',
   })
   @UseGuards(AuthGuard('naver'))
   @Get('naver/callback')

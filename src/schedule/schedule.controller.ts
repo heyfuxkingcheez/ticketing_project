@@ -14,7 +14,13 @@ import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { Roles } from 'src/auth/roles.decorator';
 import { Role } from 'src/user/types/userRole.type';
-import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 @ApiTags('SCHEDULES')
 @Controller('schedule')
@@ -23,6 +29,7 @@ export class ScheduleController {
 
   // 스케줄 등록
   @ApiOperation({ summary: '스케줄 등록' })
+  @ApiBearerAuth('accessToken')
   @ApiQuery({
     name: 'performanceId',
     required: true,
@@ -31,6 +38,10 @@ export class ScheduleController {
   @ApiResponse({
     status: 200,
     description: '스케줄 등록 성공',
+  })
+  @ApiResponse({
+    status: 400,
+    description: '스케줄 등록 실패',
   })
   @UseGuards(RolesGuard)
   @Roles(Role.Admin)
@@ -49,10 +60,15 @@ export class ScheduleController {
 
   // 스케줄 목록 조회
   @ApiOperation({ summary: '스케줄 목록 조회' })
+  @ApiBearerAuth('accessToken')
   @ApiResponse({
     status: 200,
     description: '스케줄 목록 조회 성공',
     type: CreateScheduleDto,
+  })
+  @ApiResponse({
+    status: 404,
+    description: '스케줄 목록 조회 실패',
   })
   @Get()
   findAll() {
@@ -61,10 +77,15 @@ export class ScheduleController {
 
   // 스케줄 상세 조회
   @ApiOperation({ summary: '스케줄 상세 조회' })
+  @ApiBearerAuth('accessToken')
   @ApiResponse({
     status: 200,
     description: '스케줄 상세 조회 성공',
     type: CreateScheduleDto,
+  })
+  @ApiResponse({
+    status: 404,
+    description: '스케줄 상세 조회 실패',
   })
   @ApiQuery({
     name: 'performanceId',
@@ -78,10 +99,14 @@ export class ScheduleController {
 
   // 스케줄 수정
   @ApiOperation({ summary: '스케줄 수정' })
+  @ApiBearerAuth('accessToken')
   @ApiResponse({
     status: 200,
     description: '스케줄 수정 성공',
-    type: CreateScheduleDto,
+  })
+  @ApiResponse({
+    status: 404,
+    description: '스케줄 수정 실패',
   })
   @ApiQuery({
     name: 'scheduleId',
@@ -101,9 +126,14 @@ export class ScheduleController {
 
   // 스케줄 삭제
   @ApiOperation({ summary: '스케줄 삭제' })
+  @ApiBearerAuth('accessToken')
   @ApiResponse({
     status: 200,
     description: '스케줄 삭제 성공',
+  })
+  @ApiResponse({
+    status: 404,
+    description: '스케줄 삭제 실패',
   })
   @ApiQuery({
     name: 'performanceId',

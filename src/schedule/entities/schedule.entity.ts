@@ -23,6 +23,7 @@ export class Schedule {
 
   @ManyToOne(() => Performance, (performance) => performance.schedules, {
     nullable: false,
+    onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'PerformanceId', referencedColumnName: 'performanceId' })
   performance: Performance;

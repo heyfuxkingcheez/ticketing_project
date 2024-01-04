@@ -22,7 +22,13 @@ import { RolesGuard } from 'src/auth/roles.guard';
 import { UpdateScheduleDto } from 'src/schedule/dto/update-schedule.dto';
 import { UserInfo } from 'src/utils/userInfo.decorator';
 import { User } from 'src/user/entities/user.entity';
-import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 @ApiTags('PERFORMANCES')
 @Controller('performance')
@@ -31,10 +37,14 @@ export class PerformanceController {
 
   // 공연 등록
   @ApiOperation({ summary: '공연 등록' })
+  @ApiBearerAuth('accessToken')
   @ApiResponse({
     status: 200,
     description: '공연 등록 성공',
-    type: CreateScheduleDto,
+  })
+  @ApiResponse({
+    status: 401,
+    description: '권한이 없습니다..',
   })
   @UseGuards(RolesGuard)
   @Roles(Role.Admin)
@@ -60,6 +70,10 @@ export class PerformanceController {
     status: 200,
     description: '공연 검색 성공',
   })
+  @ApiResponse({
+    status: 404,
+    description: '공연이 존재하지 않습니다.',
+  })
   @ApiQuery({
     name: 'search',
     description: '검색어',
@@ -76,6 +90,10 @@ export class PerformanceController {
     status: 200,
     description: '공연 목록 조회 성공',
   })
+  @ApiResponse({
+    status: 404,
+    description: '공연이 존재하지 않습니다.',
+  })
   @Get()
   findAll() {
     return this.performanceService.findAll();
@@ -83,9 +101,14 @@ export class PerformanceController {
 
   // 해당 공연 좌석 조회
   @ApiOperation({ summary: '해당 공연 좌석 조회' })
+  @ApiBearerAuth('accessToken')
   @ApiResponse({
     status: 200,
     description: '해당 공연 좌석 조회 성공',
+  })
+  @ApiResponse({
+    status: 404,
+    description: '좌석 정보가 존재하지 않습니다.',
   })
   @ApiQuery({
     name: 'performanceId',
@@ -97,6 +120,7 @@ export class PerformanceController {
     description: '스케줄 ID',
     required: true,
   })
+  @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @Get(':performanceId/seats/:scheduleId')
   findOneSeats(
@@ -118,6 +142,10 @@ export class PerformanceController {
     status: 200,
     description: '공연 상세 조회 성공',
   })
+  @ApiResponse({
+    status: 404,
+    description: '공연이 존재하지 않습니다.',
+  })
   @ApiQuery({
     name: 'performanceId',
     description: '공연 ID',
@@ -130,10 +158,15 @@ export class PerformanceController {
 
   // 공연 수정
   @ApiOperation({ summary: '공연 수정' })
+  @ApiBearerAuth('accessToken')
   @ApiResponse({
     status: 200,
     description: '공연 수정 성공',
     type: UpdatePerformanceDto,
+  })
+  @ApiResponse({
+    status: 401,
+    description: '권한이 없습니다.',
   })
   @ApiQuery({
     name: 'performanceId',
@@ -152,9 +185,14 @@ export class PerformanceController {
 
   // 공연 삭제
   @ApiOperation({ summary: '공연 삭제' })
+  @ApiBearerAuth('accessToken')
   @ApiResponse({
     status: 200,
     description: '공연 삭제 성공',
+  })
+  @ApiResponse({
+    status: 401,
+    description: '권한이 없습니다.',
   })
   @ApiQuery({
     name: 'performanceId',

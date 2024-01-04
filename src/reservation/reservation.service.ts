@@ -38,23 +38,17 @@ export class ReservationService {
     await queryRunner.connect();
     await queryRunner.startTransaction('READ COMMITTED'); // 격리 수준
 
-    console.log('서비스 seat: ', seat);
-    console.log('서비스 유저 id: ', id);
-    console.log('서비스 퍼포먼스 id: ', value);
-    console.log('서비스 스케줄 id: ', bodyScheduleId);
     try {
       // 공연 테이블에서 가격, 등급별 개수 가져오기
       const gradeInfo = await this.performanceRepository.findOne({
         where: { performanceId: value },
       });
-      console.log('공연 가격 ===>', gradeInfo.price);
 
       // 스케줄 id
       const schedule: any = await this.scheduleRepository.findOne({
         where: { scheduleId: bodyScheduleId },
         select: ['scheduleId', 'standardLimit', 'royalLimit', 'vipLimit'],
       });
-      console.log('스케줄아이디, 등급별 리밋 수 ==>', schedule);
 
       for (const data of seat) {
         if (
@@ -81,14 +75,10 @@ export class ReservationService {
           schedule: schedule.scheduleId,
         },
       );
-      console.log('예매 table ===> ', createdReservation);
 
       // 2. 좌석 테이블 생성
       let totalPoint = 0;
       for (let i = 0; i < seat.length; i++) {
-        console.log(`반복문 돌리는 중 ${i} 번째 =>`, seat[i].grade);
-        console.log(`반복문 돌리는 중 ${i} 번째 =>`, seat[i].seatNum);
-
         // 이미 예약된 좌석인지 확인
         const checkSeat = await queryRunner.query(
           `
@@ -98,7 +88,7 @@ export class ReservationService {
           // SQL injection 방지를 위해서 배열로 따로 빼둠
           [schedule.scheduleId, seat[i].grade, seat[i].seatNum],
         );
-        console.log('이미 예약된 좌석인지 확인 ===>', checkSeat);
+
         if (checkSeat.length !== 0)
           throw new ConflictException('이미 예매된 좌석 입니다.');
 
@@ -110,7 +100,6 @@ export class ReservationService {
               performance: value,
             },
           });
-        console.log('현재 예약 완료된 좌석 수 ===>', count);
 
         // grade별 정해진 좌석수와 예매된 좌석수 비교
         let isWithinLimit = false;
@@ -140,16 +129,14 @@ export class ReservationService {
         } else {
           throw new Error();
         }
-        console.log(`반복문 ${i}번 끝`);
       }
       // 3. 포인트 결제
-      console.log('구매한 공연 좌석 총 가격 ===>', totalPoint);
+
       const lastPoint = await queryRunner.manager.find(Point, {
         where: { user: id },
         order: { createdAt: 'DESC' },
         take: 1,
       });
-      console.log('로그인 한 유저의 포인트 잔고', lastPoint[0].balance);
 
       // 포인트 상태 변경
       if (lastPoint[0].balance < totalPoint) {
@@ -191,8 +178,6 @@ export class ReservationService {
     await queryRunner.connect();
     await queryRunner.startTransaction(); // 격리 수준
 
-    console.log('유저 ID ===>', jwtUserId);
-    console.log('예매 ID ===>', value);
     try {
       // 3시간 전 인지 확인 logic
       const getStartTime = await queryRunner.manager.findOne(Reservation, {
@@ -232,14 +217,12 @@ export class ReservationService {
         take: 1,
       });
       const currentUserBalance = currentUserPointTable[0].balance;
-      console.log('현재 잔고', currentUserBalance);
 
       // 취소할 거래 내역을 가져옴
       const refundedPoint = await queryRunner.manager.findOne(Point, {
         where: { reservation: { reservationId: value } },
       });
       const refundedPointValue = refundedPoint.expense;
-      console.log('환불할 가격', refundedPointValue);
 
       // 환불 컬럼을 생성
       // reservation 테이블의 status(예매상태)를 가져옴

@@ -21,12 +21,16 @@ export class Reservation {
   @PrimaryGeneratedColumn({ type: 'int', name: 'reservationId' })
   reservationId: number;
 
-  @ManyToOne(() => User, (user) => user.userId, { nullable: false })
+  @ManyToOne(() => User, (user) => user.userId, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'UserId' })
   user: User;
 
   @ManyToOne(() => Performance, (performance) => performance.reservations, {
     nullable: false,
+    onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'PerformanceId' })
   performance: Performance;
@@ -39,6 +43,7 @@ export class Reservation {
 
   @ManyToOne(() => Schedule, (schedule) => schedule.reservations, {
     nullable: false,
+    onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'ScheduleId' })
   schedule: Schedule;
